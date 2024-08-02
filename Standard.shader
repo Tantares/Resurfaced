@@ -13,8 +13,8 @@
 
         _BumpMap ("Bumpmap", 2D) = "bump" {}
 
-        _EmissionMap("Emission",2D) = "black" {}
-        _EmissionColor("Emission Color",Color) = (1,1,1,1)
+        _EmissiveMap("Emission",2D) = "black" {}
+        _EmissiveColor("Emission Color",Color) = (1,1,1,1)
 
     }
     SubShader
@@ -30,7 +30,7 @@
         sampler2D _MainTex;
         sampler2D _MetalMap;
         sampler2D _BumpMap;
-        sampler2D _EmissionMap;
+        sampler2D _EmissiveMap;
 
         struct Input
         {
@@ -45,13 +45,13 @@
         half _Metalness;
         
         fixed4 _Color;
-        fixed4 _EmissionColor;
+        fixed4 _EmissiveColor;
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
             fixed4 m = tex2D (_MetalMap, IN.uv_MainTex);
-            fixed4 e = tex2D (_EmissionMap, IN.uv_MainTex) * _EmissionColor;
+            fixed4 e = tex2D (_EmissiveMap, IN.uv_MainTex) * _EmissiveColor;
 
             o.Albedo = lerp(c.rgb,(_MetalAlbedoMultiplier * c.rgb),m.r) * IN.color.rgb;
             o.Metallic = m.r * _Metalness;
