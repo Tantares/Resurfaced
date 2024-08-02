@@ -61,7 +61,7 @@
             o.Smoothness = c.a * _Smoothness;
             o.Emission = e;
             o.Alpha = c.a;
-            o.Normal = UnpackNormal (tex2D (_BumpMap, IN.uv_BumpMap));
+            o.Normal = UnpackNormalDXT5nm (tex2D (_BumpMap, IN.uv_BumpMap));
         }
         ENDCG
     }
