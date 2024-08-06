@@ -56,7 +56,7 @@
             o.Albedo = lerp(c.rgb,(_MetalAlbedoMultiplier * c.rgb),m.r) * IN.color.rgb;
             o.Metallic = m.r * _Metalness;
             o.Smoothness = c.a * _Smoothness;
-            o.Emission = e;
+            o.Emission = e * e.a;
             o.Alpha = c.a;
             o.Normal = UnpackNormalDXT5nm (tex2D (_BumpMap, IN.uv_BumpMap));
         }
