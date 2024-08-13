@@ -29,7 +29,6 @@
         LOD 200
 
         CGPROGRAM
-        #include "LightingKSP.cginc"
         #pragma surface surf Standard fullforwardshadows decal:blend
         #pragma target 3.0
 
@@ -51,6 +50,7 @@
         half _Smoothness;
         half _Metalness;
         
+        fixed4 _Color;
         fixed4 _EmissiveColor;
 
         fixed4 _RimColor;
