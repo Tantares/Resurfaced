@@ -41,6 +41,9 @@ SHABBY_MATERIAL_DEF
 }
 ```
 
+The line `_MetalAlbedoMultiplier = 1.5` makes the metal parts a little bit brighter. This is usually required as the default metal colour for KSP parts is quite dark, this multiplier brings it up to more typical PBR levels.
+
+
 Then apply this in the part config:
 
 ```
