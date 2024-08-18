@@ -71,8 +71,8 @@
 
             half rim = 1.0 - saturate(dot(normalize(IN.viewDir), o.Normal));
 
-            o.Albedo = lerp(c.rgb,(_MetalAlbedoMultiplier * c.rgb),m.r) * IN.color.rgb;
             o.Metallic = saturate((m.r * _MetalRedMult) +  (m.g * _MetalGreenMult) + (m.b * _MetalBlueMult)) * _Metalness;
+            o.Albedo = lerp(c.rgb,(_MetalAlbedoMultiplier * c.rgb),o.Metallic) * IN.color.rgb;
             o.Smoothness = c.a * _Smoothness;
             o.Emission = (e * e.a) + (_RimColor.rgb * rim * RIM_MULT) + (_TemperatureColor.rgb * _TemperatureColor.a);
             o.Alpha = c.a;
