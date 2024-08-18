@@ -10,6 +10,7 @@ https://github.com/Tantares/Resurfaced
 Licence: GPL
 
 # Example Usage for Modders.
+How to apply the new shader-material to a part.
 
 Create a file to store your material for the part, for example `material.cfg` would look like this:
 ```
