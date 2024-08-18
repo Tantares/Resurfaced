@@ -12,7 +12,7 @@ Licence: GPL
 # Example Usage for Modders.
 How to apply the new shader-material to a part.
 
-Create a file to store your material for the part, for example `material.cfg` would look like this:
+Create a file to store your material for the part(s), for example `material.cfg` would look like this:
 ```
 SHABBY_MATERIAL_DEF
 {
@@ -53,3 +53,4 @@ SHABBY_MATERIAL_REPLACE
 
 This will apply the `mek_mok_m1` material to the mesh with the name `mesh1` on this part.
 The `targetTransform` line isn't required, if left out it will apply to all meshes on the part.
+Multiple parts can share the same material.
