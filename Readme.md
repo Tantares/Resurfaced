@@ -51,3 +51,4 @@ SHABBY_MATERIAL_REPLACE
 ```
 
 This will apply the `mek_mok_m1` material to the mesh with the name `mesh1` on this part.
+The `targetTransform` line isn't required, if left out it will apply to all meshes on the part.
