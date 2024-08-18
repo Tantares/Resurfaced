@@ -6,3 +6,5 @@ Add to GameData.
 
 This is the distribution for players, for modders, the shaders can be found at:
 https://github.com/Tantares/Resurfaced
+
+Licence: GPL
