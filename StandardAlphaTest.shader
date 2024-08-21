@@ -14,10 +14,10 @@
         _BumpMap ("Bumpmap", 2D) = "bump" {}
 
         _EmissiveMap("Emission",2D) = "black" {}
-        _EmissiveColor("Emission Color",Color) = (1,1,1,1)
+        _EmissiveColor("Emission Color",Color) = (0,0,0,0)
 
-        _RimColor("Rim Color",Color) = (1,1,1,1)
-        _TemperatureColor("Temperature Color",Color) = (1,1,1,1)
+        _RimColor("Rim Color",Color) = (0,0,0,0)
+        _TemperatureColor("Temperature Color",Color) = (0,0,0,0)
     }
     SubShader
     {
