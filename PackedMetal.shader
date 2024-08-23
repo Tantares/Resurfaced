@@ -28,9 +28,18 @@
         Tags { "RenderType"="Opaque" }
         LOD 200
 
+        Stencil
+        {
+            Ref 1
+            Comp Always
+            Pass Replace
+        }
+
         CGPROGRAM
 
-        #pragma surface surf Standard fullforwardshadows
+        #include "LightingKSP.cginc"
+
+        #pragma surface surf StandardKSP fullforwardshadows
         #pragma target 3.0
 
         sampler2D _MainTex;
@@ -55,7 +64,6 @@
         half _MetalGreenMult;
         half _MetalBlueMult;
         
-        fixed4 _Color;
         fixed4 _EmissiveColor;
 
         fixed4 _RimColor;

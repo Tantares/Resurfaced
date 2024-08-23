@@ -28,8 +28,18 @@
         }
         LOD 200
 
+        Stencil
+        {
+            Ref 1
+            Comp Always
+            Pass Replace
+        }
+
         CGPROGRAM
-        #pragma surface surf Standard fullforwardshadows alpha:blend
+
+        #include "LightingKSP.cginc"
+
+        #pragma surface surf StandardKSP fullforwardshadows alpha:blend
         #pragma target 3.0
 
         sampler2D _MainTex;
@@ -50,7 +60,6 @@
         half _Smoothness;
         half _Metalness;
         
-        fixed4 _Color;
         fixed4 _EmissiveColor;
 
         fixed4 _RimColor;
