@@ -78,7 +78,7 @@
             o.Albedo = c.rgb * IN.color.rgb;
             o.Metallic = m * _Metalness;
             o.Smoothness = c.a * _Smoothness;
-            o.Emission = (e * e.a) + (_RimColor.rgb * rim * RIM_MULT) + (_TemperatureColor.rgb * _TemperatureColor.a);
+            o.Emission = (e * e.a) + (_RimColor.rgb * rim * RIM_MULT * _RimColor.a) + (_TemperatureColor.rgb * _TemperatureColor.a);
             o.Alpha = c.a;
             o.Normal = UnpackNormalDXT5nm (tex2D (_BumpMap, IN.uv_BumpMap));
         }

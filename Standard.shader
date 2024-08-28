@@ -39,6 +39,7 @@
         #pragma surface surf StandardKSP fullforwardshadows
         #pragma target 3.0
 
+
         sampler2D _MainTex;
         sampler2D _MetalMap;
         sampler2D _BumpMap;
@@ -76,7 +77,7 @@
             o.Albedo = lerp(c.rgb,(_MetalAlbedoMultiplier * c.rgb),m.r) * IN.color.rgb;
             o.Metallic = m.r * _Metalness;
             o.Smoothness = c.a * _Smoothness;
-            o.Emission = (e * e.a) + (_RimColor.rgb * rim * RIM_MULT) + (_TemperatureColor.rgb * _TemperatureColor.a);
+            o.Emission = (e * e.a) + (_RimColor.rgb * rim * RIM_MULT * _RimColor.a) + (_TemperatureColor.rgb * _TemperatureColor.a);
             o.Alpha = c.a;
             o.Normal = UnpackNormalDXT5nm (tex2D (_BumpMap, IN.uv_BumpMap));
         }
