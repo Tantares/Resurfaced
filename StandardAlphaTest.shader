@@ -11,7 +11,7 @@
         _MetalMap("Metal",2D) = "white" {}
         _Metalness ("Metallic", Range(0,1)) = 0.0
 
-        _BumpMap ("Bumpmap", 2D) = "bump" {}
+        _BumpMap ("Bumpmap", 2D) = "normal" {}
 
         _EmissiveMap("Emission",2D) = "black" {}
         _EmissiveColor("Emission Color",Color) = (0,0,0,0)
