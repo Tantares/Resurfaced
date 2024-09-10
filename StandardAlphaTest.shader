@@ -5,11 +5,11 @@
         _Color ("Color", Color) = (1,1,1,1)
         
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
-        _Smoothness ("Smoothness", Range(0,1)) = 0.5
+        _Smoothness ("Smoothness", Range(0,1)) = 1.0
         _AlphaCutoff("Alpha cutoff", Range(0,1)) = 0.5
 
         _MetalMap("Metal",2D) = "white" {}
-        _Metalness ("Metallic", Range(0,1)) = 0.0
+        _Metalness ("Metallic", Range(0,1)) = 1.0
 
         _BumpMap ("Bumpmap", 2D) = "normal" {}
 

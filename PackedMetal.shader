@@ -5,11 +5,11 @@
         _Color ("Color", Color) = (1,1,1,1)
         
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
-        _Smoothness ("Smoothness", Range(0,1)) = 0.5
+        _Smoothness ("Smoothness", Range(0,1)) = 1.0
         _MetalAlbedoMultiplier("Metal Albedo Multiplier",range(0,1.5)) = 1.0
         
         _MetalMap("Metal",2D) = "white" {}
-        _Metalness ("Metalness", Range(0,1)) = 0.0
+        _Metalness ("Metalness", Range(0,1)) = 1.0
         _MetalRedMult("Metalness Red Multiplier", Range(0,1)) = 0.0
         _MetalGreenMult("Metalness Green Multiplier", Range(0,1)) = 0.0
         _MetalBlueMult("Metalness Blue Multiplier", Range(0,1)) = 0.0
