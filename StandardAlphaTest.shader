@@ -25,7 +25,7 @@
         {
             "RenderType" = "TransparentCutout" 
             "IgnoreProjector" = "True" 
-            "Queue" = "AlphaTest" 
+            "Queue" = "AlphaTest+100" 
         }
         LOD 200
 
