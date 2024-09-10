@@ -12,7 +12,7 @@
 
         _BumpMap ("Bumpmap", 2D) = "normal" {}
 
-        _EmissiveMap("Emission",2D) = "black" {}
+        _Emissive("Emission",2D) = "black" {}
         _EmissiveColor("Emission Color",Color) = (0,0,0,0)
 
         _RimColor("Rim Color",Color) = (0,0,0,0)
@@ -45,7 +45,7 @@
         sampler2D _MainTex;
         sampler2D _MetalMap;
         sampler2D _BumpMap;
-        sampler2D _EmissiveMap;
+        sampler2D _Emissive;
 
         struct Input
         {
@@ -71,7 +71,7 @@
         {
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
             fixed4 m = tex2D (_MetalMap, IN.uv_MainTex);
-            fixed4 e = tex2D (_EmissiveMap, IN.uv_MainTex) * _EmissiveColor;
+            fixed4 e = tex2D (_Emissive, IN.uv_MainTex) * _EmissiveColor;
 
             half rim = 1.0 - saturate(dot(normalize(IN.viewDir), o.Normal));
 
