@@ -1,5 +1,5 @@
 # R E S U R F A C E D
-## v1.0
+## v1.1
 
 Stockalike PBR shaders for KSP.
 Add to GameData.
