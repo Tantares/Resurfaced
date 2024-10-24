@@ -48,6 +48,7 @@
         struct Input
         {
             float2 uv_MainTex;
+            float2 uv_Emissive;
             float2 uv_BumpMap;
 
             half4 color : COLOR;
@@ -66,15 +67,29 @@
 
         #define RIM_MULT 0.5
 
+        #define ALBEDO_RAMP_A 0.25
+        #define ALBEDO_RAMP_B 0.1
+        #define ALBEDO_RAMP_DIVIDER 0.16
+
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
             fixed4 m = tex2D (_MetalMap, IN.uv_MainTex);
-            fixed4 e = tex2D (_Emissive, IN.uv_MainTex) * _EmissiveColor;
+            fixed4 e = tex2D (_Emissive, IN.uv_Emissive) * _EmissiveColor;
+
+            fixed cl = Luminance(c.rgb);
+            fixed ol = cl;
+            cl = ((cl - ALBEDO_RAMP_B) * (ALBEDO_RAMP_A - (ALBEDO_RAMP_B * cl))) / ALBEDO_RAMP_DIVIDER;
 
             half rim = 1.0 - saturate(dot(normalize(IN.viewDir), o.Normal));
 
             o.Albedo = lerp(c.rgb,(_MetalAlbedoMultiplier * c.rgb),m.r) * IN.color.rgb;
+
+            fixed isScaled = step(o.Albedo, 0.25) * (1.0 - m.r);
+            fixed albedoMult = isScaled * max(0, cl) / max(1e-3, ol) + (1 - isScaled); 
+
+            o.Albedo *= (albedoMult);
+
             o.Metallic = m.r * _Metalness;
             o.Smoothness = c.a * _Smoothness;
             o.Emission = (e * e.a) + (_RimColor.rgb * rim * RIM_MULT * _RimColor.a) + (_TemperatureColor.rgb * _TemperatureColor.a);

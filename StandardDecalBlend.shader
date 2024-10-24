@@ -50,6 +50,7 @@
         struct Input
         {
             float2 uv_MainTex;
+            float2 uv_Emissive;
             float2 uv_BumpMap;
 
             half4 color : COLOR;
@@ -71,7 +72,7 @@
         {
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
             fixed4 m = tex2D (_MetalMap, IN.uv_MainTex);
-            fixed4 e = tex2D (_Emissive, IN.uv_MainTex) * _EmissiveColor;
+            fixed4 e = tex2D (_Emissive, IN.uv_Emissive) * _EmissiveColor;
 
             half rim = 1.0 - saturate(dot(normalize(IN.viewDir), o.Normal));
 
