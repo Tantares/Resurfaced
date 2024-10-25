@@ -83,7 +83,7 @@
             o.Metallic = saturate((m.r * _MetalRedMult) +  (m.g * _MetalGreenMult) + (m.b * _MetalBlueMult)) * _Metalness;
             o.Albedo = lerp(c.rgb,(_MetalAlbedoMultiplier * c.rgb),o.Metallic) * IN.color.rgb;
             o.Smoothness = c.a * _Smoothness;
-            o.Emission = (e * e.a) + (_RimColor.rgb * rim * RIM_MULT * _RimColor.a) + (_TemperatureColor.rgb * _TemperatureColor.a);
+            o.Emission = (e * _EmissiveColor.a) + (_RimColor.rgb * rim * RIM_MULT * _RimColor.a) + (_TemperatureColor.rgb * _TemperatureColor.a);
             o.Alpha = c.a;
             o.Normal = UnpackNormalDXT5nm (tex2D (_BumpMap, IN.uv_BumpMap));
         }
