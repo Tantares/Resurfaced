@@ -53,10 +53,10 @@ namespace Technicolor
       FILL_ENTER_MESSAGE = Localizer.Format("#LOC_Technicolor_UI_Message_Fill_Enter");
       editorToolsUI = GetComponent<EditorToolsUI>();
 
-      paintKeyBinding = new KeyBinding(TechnicolorEditorLogic.Instance.PaintModeKey, ControlTypes.EDITOR_GIZMO_TOOLS | ControlTypes.KEYBOARDINPUT);
-      sampleKeyBinding = new KeyBinding(TechnicolorEditorLogic.Instance.SampleModeKey, ControlTypes.EDITOR_GIZMO_TOOLS | ControlTypes.KEYBOARDINPUT);
-      fillKeyBinding = new KeyBinding(TechnicolorEditorLogic.Instance.FillModeKey, ControlTypes.EDITOR_GIZMO_TOOLS | ControlTypes.KEYBOARDINPUT);
-      paletteKeyBinding = new KeyBinding(TechnicolorEditorLogic.Instance.TogglePaletteKey, ControlTypes.EDITOR_GIZMO_TOOLS | ControlTypes.KEYBOARDINPUT);
+      paintKeyBinding = new KeyBinding(Settings.PaintModeKey, ControlTypes.EDITOR_GIZMO_TOOLS | ControlTypes.KEYBOARDINPUT);
+      sampleKeyBinding = new KeyBinding(Settings.SampleModeKey, ControlTypes.EDITOR_GIZMO_TOOLS | ControlTypes.KEYBOARDINPUT);
+      fillKeyBinding = new KeyBinding(Settings.FillModeKey, ControlTypes.EDITOR_GIZMO_TOOLS | ControlTypes.KEYBOARDINPUT);
+      paletteKeyBinding = new KeyBinding(Settings.TogglePaletteKey, ControlTypes.EDITOR_GIZMO_TOOLS | ControlTypes.KEYBOARDINPUT);
 
       CreateToolButtons();
 
@@ -352,11 +352,11 @@ namespace Technicolor
       }
       if (sampleKeyBinding.GetKeyDown())
       {
-        SetMode(paintConstructionMode, true);
+        SetMode(sampleConstructionMode, true);
       }
       if (fillKeyBinding.GetKeyDown())
       {
-        SetMode(paintConstructionMode, true);
+        SetMode(fillConstructionMode, true);
       }
       if (paletteKeyBinding.GetKeyDown())
       {
