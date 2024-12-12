@@ -1,2 +1,13 @@
 
 *.zip
+tmp/
+deploy/
+build/
+build-deploy/
+.vs/
+.idea/
+bin/
+obj/
+*.swp
+**/*.csproj.user
+/Source/Technicolor/packages/
