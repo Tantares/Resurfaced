@@ -57,24 +57,22 @@ namespace Technicolor
       /// If there are transform names, pick from them.      
       if (_transforms != null && _transforms.Length > 0)
       {
-        List<Transform> candidates = new();
+        Renderer[] candidates = _part.GetComponentsInChildren<Renderer>(true);
         for (int i = 0; i < _transforms.Length; i++)
         {
-          candidates.AddRange(_part.FindModelTransforms(_transforms[i]));
-        }
-        for (int i = 0; i < candidates.Count; i++)
-        {
-          Renderer r = candidates[i].GetComponent<Renderer>();
-          if (r != null)
+          for (int j = 0; j < candidates.Length; j++)
           {
-            renderers.Add(r);
+            if (candidates[j].name == _transforms[i])
+            {
+              renderers.Add(candidates[j]);
+            }
           }
         }
       }
       else
       /// Else fire everthing
       {
-        renderers = _part.GetComponentsInChildren<Renderer>().ToList();
+        renderers = _part.GetComponentsInChildren<Renderer>(true).ToList();
       }
 
       List<Material> mats = new();

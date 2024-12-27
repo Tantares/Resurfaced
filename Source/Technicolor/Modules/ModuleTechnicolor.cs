@@ -90,7 +90,7 @@ namespace Technicolor
         {
           if (kvp.Key == SwatchSlot.CPrimary || kvp.Key == SwatchSlot.CSecondary)
           {
-            zones[1].SetSwatch(swatches.Slots[SwatchSlot.CPrimary], swatches.Slots[SwatchSlot.CSecondary]);
+            zones[2].SetSwatch(swatches.Slots[SwatchSlot.CPrimary], swatches.Slots[SwatchSlot.CSecondary]);
           }
         }
       }

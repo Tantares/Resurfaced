@@ -232,8 +232,8 @@ namespace Technicolor
             {
               if (!EditorLogic.fetch.ship.Contains(toPaint))
               {
-                on_paintSelect.GoToStateOnEvent = EditorLogic.fetch.st_place;
-                EditorLogic.fetch.on_partPicked.OnEvent();
+                //on_paintSelect.GoToStateOnEvent = EditorLogic.fetch.st_place;
+                //EditorLogic.fetch.on_partPicked.OnEvent();
                 return false;
               }
               var module = toPaint.FindModuleImplementing<ModuleTechnicolor>();
