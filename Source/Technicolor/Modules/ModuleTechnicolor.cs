@@ -5,13 +5,12 @@ namespace Technicolor
 {
   public class ModuleTechnicolor : PartModule
   {
+    [KSPField(isPersistant = true)]
+    public bool FirstPlaced = true;
+
     [SerializeField]
     public ColorZone[] zones;
-    void Awake()
-    {
-      base.Awake();
 
-    }
     public override void OnStart(StartState state)
     {
       base.OnStart(state);
@@ -19,16 +18,40 @@ namespace Technicolor
       {
         if (zones != null)
         {
-          ColorZone[] copyTarget = new ColorZone[zones.Length];
-          for (int i = 0; i < copyTarget.Length; i++)
+          if (FirstPlaced)
           {
-            copyTarget[i] = Instantiate(zones[i]);
+
+            Utils.Log($"[ModuleTechnicolor] Collecting initial info from object", LogType.Any);
+            // Copy out of the scriptable object
+            ColorZone[] copyTarget = new ColorZone[zones.Length];
+            for (int i = 0; i < copyTarget.Length; i++)
+            {
+              copyTarget[i] = Instantiate(zones[i]);
+            }
+            zones = copyTarget;
+
           }
-          zones = copyTarget;
+
           for (int i = 0; i < zones.Length; i++)
           {
-            zones[i].Initialize(part);
+            if (FirstPlaced)
+            {
+              TechnicolorPersistentZoneData z = TechnicolorEditorLogic.SwatchData.GetZone(zones[i].ZoneName);
+              if (z.AutoApply)
+              {
+                zones[i].Initialize(part, z.PrimarySwatch.Name, z.SecondarySwatch.Name);
+              }
+              else
+              {
+                zones[i].Initialize(part);
+              }
+            }
+            else
+            {
+              //zones[i].Initialize(part);
+            }
           }
+          FirstPlaced = false;
         }
       }
     }
@@ -57,7 +80,7 @@ namespace Technicolor
     public override void OnSave(ConfigNode node)
     {
       base.OnSave(node);
-      
+
       if (zones != null)
       {
         for (int i = 0; i < zones.Length; i++)
@@ -71,56 +94,58 @@ namespace Technicolor
 
     public void SetPartSwatches(TechnicolorSwatchData swatches)
     {
-      Utils.Log("[ModuleTechnicolor] Applying Swatches To Part", LogType.Any);
-      /// this sucks rewrite it
-      foreach (KeyValuePair<SwatchSlot, TechnicolorSwatch> kvp in swatches.Slots)
+      foreach (TechnicolorPersistentZoneData zoneData in swatches.Zones)
       {
-        if (kvp.Key == SwatchSlot.APrimary || kvp.Key == SwatchSlot.ASecondary)
+        if (zoneData.ActiveInEditor)
         {
-          zones[0].SetSwatch(swatches.Slots[SwatchSlot.APrimary], swatches.Slots[SwatchSlot.ASecondary]);
-        }
-        if (zones.Length > 1)
-        {
-          if (kvp.Key == SwatchSlot.BPrimary || kvp.Key == SwatchSlot.BSecondary)
-          {
-            zones[1].SetSwatch(swatches.Slots[SwatchSlot.BPrimary], swatches.Slots[SwatchSlot.BSecondary]);
-          }
-        }
-        if (zones.Length > 2)
-        {
-          if (kvp.Key == SwatchSlot.CPrimary || kvp.Key == SwatchSlot.CSecondary)
-          {
-            zones[2].SetSwatch(swatches.Slots[SwatchSlot.CPrimary], swatches.Slots[SwatchSlot.CSecondary]);
-          }
+          SetSwatchesForSlot(zoneData);
         }
       }
-
-      ApplySwatches();
     }
 
-    public void GetPartSwatches(TechnicolorSwatchData swatches)
+    public void SetSwatchesForSlot(TechnicolorPersistentZoneData slotData)
     {
-      swatches.Slots[SwatchSlot.APrimary] = zones[0].PrimarySwatch ?? swatches.Slots[SwatchSlot.APrimary];
-      swatches.Slots[SwatchSlot.ASecondary] = zones[0].SecondarySwatch ?? swatches.Slots[SwatchSlot.ASecondary];
-      if (zones.Length > 1)
+      Utils.Log($"[ModuleTechnicolor] Applying swatches for zone {slotData.ZoneName} To part", LogType.Any);
+
+      for (int i = 0; i < zones.Length; i++)
       {
-        swatches.Slots[SwatchSlot.BPrimary] = zones[1].PrimarySwatch! ?? swatches.Slots[SwatchSlot.BPrimary];
-        swatches.Slots[SwatchSlot.BSecondary] = zones[1].SecondarySwatch ?? swatches.Slots[SwatchSlot.BSecondary];
+        if (zones[i].ZoneName == slotData.ZoneName)
+        {
+          zones[i].SetSwatch(slotData.PrimarySwatch, slotData.SecondarySwatch);
+          zones[i].Apply();
+        }
       }
-      if (zones.Length > 2)
+    }
+
+    public void GetPartSwatches(ref TechnicolorSwatchData swatches)
+    {
+
+      foreach (TechnicolorPersistentZoneData zoneData in swatches.Zones)
       {
-        swatches.Slots[SwatchSlot.CPrimary] = zones[2].PrimarySwatch ?? swatches.Slots[SwatchSlot.CPrimary];
-        swatches.Slots[SwatchSlot.CSecondary] = zones[2].SecondarySwatch ?? swatches.Slots[SwatchSlot.CSecondary];
+        if (!zoneData.AlwaysActive)
+          zoneData.ActiveInEditor = false;
+
+        for (int i = 0; i < zones.Length; i++)
+        {
+          if (zones[i].ZoneName == zoneData.ZoneName)
+          {
+
+            Utils.Log($"[ModuleTechnicolor] Sampling {zones[i].PrimarySwatch.Name} and {zones[i].SecondarySwatch.Name} from {zones[i].ZoneName}", LogType.Any);
+            zoneData.ActiveInEditor = true;
+            zoneData.PrimarySwatch = zones[i].PrimarySwatch ?? zoneData.PrimarySwatch;
+            zoneData.SecondarySwatch = zones[i].SecondarySwatch ?? zoneData.SecondarySwatch;
+          }
+        }
       }
     }
 
     public void ApplySwatches()
     {
-      
-      for (int i = 0; i < zones.Length; i++)
-      {
-        zones[i].Apply();
-      }
+      if (zones != null)
+        for (int i = 0; i < zones.Length; i++)
+        {
+          zones[i].Apply();
+        }
     }
   }
 }

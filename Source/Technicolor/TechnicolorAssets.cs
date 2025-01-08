@@ -12,9 +12,11 @@ namespace Technicolor
   public class TechnicolorAssets : MonoBehaviour
   {
     public static GameObject SwatchWindowPrefab { get; private set; }
-    public static GameObject SwatchGroupPrefab { get; private set; }
-    public static GameObject SwatchButtonPrefab { get; private set; }
+    public static GameObject SwatchWidgetPrefab { get; private set; }
+    public static GameObject SwatchLibraryGroupPrefab { get; private set; }
+    public static GameObject SwatchLibraryButtonPrefab { get; private set; }
 
+    public static GameObject EditorRolloverPrefab { get; private set; }
     public static GameObject SwatchRenderMultiPrefab { get; private set; }
     public static GameObject SwatchRenderSpherePrefab { get; private set; }
     public static Material SwatchRenderSkybox { get; private set; }
@@ -42,12 +44,23 @@ namespace Technicolor
       AssetBundle prefabs = AssetBundle.LoadFromFile(Path.Combine(KSPUtil.ApplicationRootPath, ASSET_PATH));
 
       /// Get the Prefabs
-      SwatchWindowPrefab = prefabs.LoadAsset("SwatchWindow") as GameObject;
+      SwatchWindowPrefab = prefabs.LoadAsset("SwatchWindow2") as GameObject;
 
-      SwatchGroupPrefab = prefabs.LoadAsset("SwatchGroup") as GameObject;
-      SwatchGroupPrefab.AddComponent<UISwatchGroup>().AssignReferences();
-      SwatchButtonPrefab = prefabs.LoadAsset("SwatchButton") as GameObject;
-      SwatchButtonPrefab.AddComponent<UISwatch>().AssignReferences();
+      SwatchWidgetPrefab = prefabs.LoadAsset("ZoneSwatchWidget") as GameObject;
+      SwatchWidgetPrefab.AddComponent<UISwatchZoneWidget>().AssignReferences();
+      SwatchWidgetPrefab.transform.SetParent(this.transform);
+
+      SwatchLibraryGroupPrefab = prefabs.LoadAsset("SwatchGroup") as GameObject;
+      SwatchLibraryGroupPrefab.AddComponent<UILibrarySwatchGroup>().AssignReferences();
+      SwatchLibraryGroupPrefab.transform.SetParent(this.transform);
+
+      SwatchLibraryButtonPrefab = prefabs.LoadAsset("SwatchButton") as GameObject;
+      SwatchLibraryButtonPrefab.AddComponent<UILibrarySwatch>().AssignReferences();
+      SwatchLibraryButtonPrefab.transform.SetParent(this.transform);
+
+      EditorRolloverPrefab = prefabs.LoadAsset("ZoneRolloverWidget") as GameObject;
+      EditorRolloverPrefab.AddComponent<UIEditorRolloverPanel>().AssignReferences();
+      EditorRolloverPrefab.transform.SetParent(this.transform);
 
       Utils.Log("[TechnicolorAssets]: Loaded UI Prefabs", LogType.Loading);
 

@@ -52,6 +52,35 @@ namespace Technicolor
       renderTexture = null;
       return texture2D;
     }
+    internal static Texture2D RenderCamera(Camera cam, int width, int height, int depth, RenderTextureReadWrite rtReadWrite, Texture2D targetTexture, int offset)
+    {
+      RenderTexture renderTexture = new RenderTexture(width, height, depth, RenderTextureFormat.ARGB32, rtReadWrite);
+      renderTexture.Create();
+      RenderTexture active = RenderTexture.active;
+      RenderTexture.active = renderTexture;
+      cam.targetTexture = renderTexture;
+      cam.Render();
+      //Texture2D texture2D = new Texture2D(width, height, TextureFormat.ARGB32, mipChain: true);
+      targetTexture.ReadPixels(new Rect(0f, 0f, width, height), offset, 0, recalculateMipMaps: false);
+      targetTexture.Apply();
+      RenderTexture.active = active;
+      cam.targetTexture = null;
+      renderTexture.Release();
+      UnityEngine.Object.DestroyImmediate(renderTexture);
+      renderTexture = null;
+      return targetTexture;
+    }
+    internal static Texture2D ExtractFromTexture(RenderTexture tex, int width, int height, int depth, RenderTextureReadWrite rtReadWrite, Texture2D targetTexture, int offset)
+    {
+      
+      RenderTexture.active = tex;
+      //Texture2D texture2D = new Texture2D(width, height, TextureFormat.ARGB32, mipChain: true);
+      targetTexture.ReadPixels(new Rect(0f, 0f, width, height), offset, 0, recalculateMipMaps: false);
+      targetTexture.Apply();
+      RenderTexture.active = null;
+      return targetTexture;
+    }
+
     internal static void PlaceObjectAtPointing(Transform t, float distance, float elevation, float azimuth, float pitch, float heading)
     {
 
@@ -115,14 +144,158 @@ namespace Technicolor
       {
         GenerateRenderTexture(resolution);
       }
-      swatchTexture = RenderCamera(swatchCamera, resolution*3, resolution, 24, RenderTextureReadWrite.Default);
+      swatchTexture = RenderCamera(swatchCamera, resolution * 3, resolution, 24, RenderTextureReadWrite.Default);
 
       UnityEngine.Object.Destroy(cameraObject);
       UnityEngine.Object.Destroy(swatchObject);
       return swatchTexture;
     }
 
+    internal static Texture2D skyTexture;
+    internal static Camera skyCamera;
+    public static Texture2D RenderSkyboxToCubemap(int resolution, Transform parent)
+    {
+
+      GameObject cameraObject = new GameObject("skyCamera");
+      skyCamera = cameraObject.AddComponent<Camera>();
+      skyCamera.clearFlags = CameraClearFlags.Depth;
+      skyCamera.renderingPath = RenderingPath.DeferredShading;
+      //swatchCamera.backgroundColor = Color.clear;
+      skyCamera.cullingMask = FlightCamera.fetch.mainCamera.cullingMask;
+      //skyCamera.cullingMask = 0;
+      //skyCamera.cullingMask |= (1 << 9);
+      //skyCamera.cullingMask |= (1 << 15);
+      //skyCamera.cullingMask |= (1 << 18);
+      skyCamera.enabled = false;
+      skyCamera.fieldOfView = 90;
+      skyCamera.orthographic = false;
+      skyCamera.allowHDR = true;
+
+      cameraObject.transform.SetParent(parent);
+      cameraObject.transform.localPosition = Vector3.zero;
+      cameraObject.transform.localRotation = Quaternion.identity;
+
+
+      if (skyTexture == null)
+      {
+        if (renderTexture != null)
+        {
+          renderTexture.Release();
+        }
+        renderTexture = new RenderTexture(resolution, resolution, 32, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default);
+        renderTexture.Create();
+        skyTexture = new Texture2D(resolution * 6, resolution, TextureFormat.ARGB32, mipChain: false);
+      }
+      int cubeFace = 0;
+      //
+      skyTexture = RenderCamera(skyCamera, resolution, resolution, 24, RenderTextureReadWrite.Default, skyTexture, renderTexture.width * cubeFace);
+      cameraObject.transform.Rotate(new Vector3(0, 90, 0), Space.Self);
+      cubeFace++;
+      skyTexture = RenderCamera(skyCamera, resolution, resolution, 24, RenderTextureReadWrite.Default, skyTexture, renderTexture.width * cubeFace);
+      cameraObject.transform.Rotate(new Vector3(0, 90, 0), Space.Self);
+      cubeFace++;
+      skyTexture = RenderCamera(skyCamera, resolution, resolution, 24, RenderTextureReadWrite.Default, skyTexture, renderTexture.width * cubeFace);
+      cameraObject.transform.Rotate(new Vector3(0, 90, 0), Space.Self);
+      cubeFace++;
+      skyTexture = RenderCamera(skyCamera, resolution, resolution, 24, RenderTextureReadWrite.Default, skyTexture, renderTexture.width * cubeFace);
+
+
+      cameraObject.transform.Rotate(new Vector3(90, 0, 0), Space.Self);
+      cubeFace++;
+      skyTexture = RenderCamera(skyCamera, resolution, resolution, 24, RenderTextureReadWrite.Default, skyTexture, renderTexture.width * cubeFace);
+      cameraObject.transform.Rotate(new Vector3(180, 0, 0), Space.Self);
+      cubeFace++;
+      skyTexture = RenderCamera(skyCamera, resolution, resolution, 24, RenderTextureReadWrite.Default, skyTexture, renderTexture.width * cubeFace);
+      UnityEngine.Object.Destroy(cameraObject);
+
+      return skyTexture;
+
+    }
+
+    public static Cubemap renderedCube;
+    public static Texture2D RenderSkyboxToCubemap2(int resolution, Transform parent)
+    {
+
+      GameObject cameraObject = new GameObject("skyCamera");
+      skyCamera = cameraObject.AddComponent<Camera>();
+      skyCamera.clearFlags = CameraClearFlags.Skybox;
+      
+      //swatchCamera.backgroundColor = Color.clear;
+      skyCamera.fieldOfView = CAM_FOV;
+      skyCamera.cullingMask = 0;
+      skyCamera.cullingMask |= (1 << 15);
+      skyCamera.cullingMask |= (1 << 9);
+      skyCamera.enabled = false;
+      //skyCamera.orthographic = true;
+      //skyCamera.orthographicSize = 1f;
+      skyCamera.allowHDR = false;
+
+      cameraObject.transform.SetParent(parent);
+      cameraObject.transform.localPosition = Vector3.zero;
+      cameraObject.transform.localRotation = Quaternion.identity;
+
+      //renderedCube = new Cubemap(512, UnityEngine.Experimental.Rendering.DefaultFormat.HDR, true);
+      //skyCamera.RenderToCubemap(renderedCube);
+
+      if (skyTexture == null)
+      {
+        skyTexture = new Texture2D(resolution * 6, resolution, TextureFormat.ARGB32, mipChain: false);
+
+        if (renderTexture != null)
+        {
+          renderTexture.Release();
+        }
+        renderTexture = new RenderTexture(resolution, resolution, 16, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default);
+        renderTexture.dimension = UnityEngine.Rendering.TextureDimension.Cube;
+        renderTexture.Create();
+        //GetComponent<Renderer>().sharedMaterial.SetTexture("_Cube", renderTexture);
+        skyCamera.RenderToCubemap(renderTexture, 63);
+
+
+      }
+      RenderTexture tempRT = null;
+      if (tempRT == null)
+      {
+        tempRT = new RenderTexture(renderTexture.width, renderTexture.height, 16, renderTexture.graphicsFormat, renderTexture.mipmapCount);
+        tempRT.dimension = UnityEngine.Rendering.TextureDimension.Cube;
+        tempRT.useMipMap = true;
+      }
+
+      for (int i = 0; i < 6; i++)
+      {
+        Graphics.CopyTexture(renderTexture, i, tempRT, i);
+        Graphics.SetRenderTarget(tempRT, 0, (CubemapFace)i);
+        skyTexture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), i * renderTexture.width, 0);
+      }
+      skyTexture.Apply();
+      //int cubeFace = 0;
+      ////
+      //skyTexture = ExtractFromTexture(renderTexture, resolution, resolution, 24, RenderTextureReadWrite.Default, skyTexture, resolution * cubeFace);
+      //cameraObject.transform.Rotate(new Vector3(0, 90, 0), Space.Self);
+      //cubeFace++;
+      //skyTexture = ExtractFromTexture(renderTexture, resolution, resolution, 24, RenderTextureReadWrite.Default, skyTexture, resolution * cubeFace);
+      //cameraObject.transform.Rotate(new Vector3(0, 90, 0), Space.Self);
+      //cubeFace++;
+      //skyTexture = ExtractFromTexture(renderTexture, resolution, resolution, 24, RenderTextureReadWrite.Default, skyTexture, resolution * cubeFace);
+      //cameraObject.transform.Rotate(new Vector3(0, 90, 0), Space.Self);
+      //cubeFace++;
+      //skyTexture = ExtractFromTexture(renderTexture, resolution, resolution, 24, RenderTextureReadWrite.Default, skyTexture, resolution * cubeFace);
+
+      //cameraObject.transform.Rotate(new Vector3(90, 0, 0), Space.Self);
+      //cubeFace++;
+      //skyTexture = ExtractFromTexture(renderTexture, resolution, resolution, 24, RenderTextureReadWrite.Default, skyTexture, resolution * cubeFace);
+      //;
+      //cameraObject.transform.Rotate(new Vector3(180, 0, 0), Space.Self);
+      //cubeFace++;
+      //skyTexture = ExtractFromTexture(renderTexture, resolution, resolution, 24, RenderTextureReadWrite.Default, skyTexture, resolution * cubeFace);
+
+
+      UnityEngine.Object.DestroyImmediate(renderTexture);
+      UnityEngine.Object.Destroy(cameraObject);
+
+      return skyTexture;
+
+    }
+
   }
-
-
 }

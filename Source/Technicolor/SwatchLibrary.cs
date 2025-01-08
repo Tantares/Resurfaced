@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Technicolor
 {
@@ -48,6 +49,10 @@ namespace Technicolor
           }
         }
       }
+
+      IComparer<TechnicolorSwatch> comparer = new TechnicolorSwatchComparer();
+      Swatches.Sort(comparer);
+
       Utils.Log($"[SwatchLibrary] Loaded {Swatches.Count} Swatches", LogType.Loading);
       foreach (TechnicolorSwatch swatch in Swatches)
       {
@@ -59,6 +64,22 @@ namespace Technicolor
       Utils.Log($"[SwatchLibrary] Loaded {SwatchGroups.Count} Swatch Groups", LogType.Loading);
     }
 
-    
+
+    public class TechnicolorSwatchComparer : IComparer<TechnicolorSwatch>
+    {
+      public int Compare(TechnicolorSwatch x, TechnicolorSwatch y)
+      {
+        Color.RGBToHSV(x.Color, out float h1, out float s1, out float v1);
+        Color.RGBToHSV(y.Color, out float h2, out float s2, out float v2);
+        int compareSmooth = x.Smoothness.CompareTo(y.Smoothness);
+
+        if (compareSmooth == 0)
+        {
+          int compareHue = h1.CompareTo(h2);
+          return compareHue;
+        }
+        return compareSmooth;
+      }
+    }
   }
 }

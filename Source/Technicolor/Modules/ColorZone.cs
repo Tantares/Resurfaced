@@ -12,6 +12,8 @@ namespace Technicolor
     public TechnicolorSwatch SecondarySwatch => _secondarySwatch;
 
     [SerializeField]
+    public string ZoneName = "main";
+    [SerializeField]
     public string PrimarySwatchName = "";
     [SerializeField]
     public string SecondarySwatchName = "";
@@ -32,11 +34,13 @@ namespace Technicolor
     }
     public void Save(ConfigNode node)
     {
+      node.AddValue("name", ZoneName);
       node.AddValue("swatchPrimary", PrimarySwatchName);
       node.AddValue("swatchSecondary", SecondarySwatchName);
     }
     public void Load(ConfigNode node)
     {
+      node.TryGetValue("name", ref ZoneName);
       node.TryGetValue("swatchPrimary", ref PrimarySwatchName);
       node.TryGetValue("swatchSecondary", ref SecondarySwatchName);
       _transforms = node.GetValues("transform");
@@ -49,6 +53,13 @@ namespace Technicolor
       _primarySwatch = TechnicolorData.Instance.SwatchLibrary.GetSwatch(PrimarySwatchName);
       _secondarySwatch = TechnicolorData.Instance.SwatchLibrary.GetSwatch(SecondarySwatchName);
       Apply();
+    }
+    public void Initialize(Part p, string overridePrimary, string overrideSecondary)
+    {
+      PrimarySwatchName = overridePrimary;
+      SecondarySwatchName = overrideSecondary;
+      Initialize(p);
+
     }
     protected void CollectMaterials()
     {
@@ -104,7 +115,7 @@ namespace Technicolor
     }
     public void Apply()
     {
-      Utils.Log($"[ColorZone] Applying Swatches {_primarySwatch.Name} and {_secondarySwatch.Name} to zone", LogType.Any);
+      Utils.Log($"[ColorZone] Applying swatches to materials", LogType.Any);
       if (materials != null)
       {
         for (int i = 0; i < materials.Length; i++)

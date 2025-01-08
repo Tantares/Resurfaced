@@ -8,7 +8,7 @@ namespace Technicolor
 
     public static TechnicolorSwatchData SwatchData;
     public static TechnicolorEditorLogic Instance;
-
+    public static TechnicolorEditorRollover Rollover;
 
     public void Start()
     {
@@ -17,11 +17,39 @@ namespace Technicolor
         SwatchData = new();
       }
       EditorLogic.fetch.toolsUI.gameObject.AddComponent<TechnicolorEditorModes>();
+      GameEvents.onVariantApplied.Add(new EventData<Part, PartVariant>.OnEvent(OnPartVariantApplied));
+
+      Rollover = this.gameObject.AddComponent<TechnicolorEditorRollover>();
     }
 
-    public static void SetSwatchesSampled()
+    public static void GetSwatchesFromPart(ModuleTechnicolor module)
     {
-      TechnicolorUI.Instance.MaterialWindow.ResetEditorUISwatches();
+      Utils.Log($"[TechnicolorEditorLogic] Getting swatches from part");
+      module.GetPartSwatches(ref SwatchData);
+      TechnicolorUI.Instance.MaterialWindow.SetUISwatches();
+    }
+    public static void PaintPart(ModuleTechnicolor module)
+    {
+      Utils.Log($"[TechnicolorEditorLogic] Painting part");
+      module.SetPartSwatches(SwatchData);
+    }
+
+    /// <summary>
+    /// This function exists purely to deal with ModulePartVariants resetting materials when variants change
+    /// </summary>
+    /// <param name="part"></param>
+    /// <param name="partVariant"></param>
+    public void OnPartVariantApplied(Part part, PartVariant partVariant)
+    {
+      if (part != null)
+      {
+        ModuleTechnicolor module = part.GetComponent<ModuleTechnicolor>();
+        if (module != null)
+        {
+          module.ApplySwatches();
+          Utils.Log($"[TechnicolorEditorLogic] Painting part");
+        }
+      }
     }
 
     void Awake()
@@ -32,6 +60,7 @@ namespace Technicolor
     void OnDestroy()
     {
       Instance = null;
+      GameEvents.onVariantApplied.Remove(OnPartVariantApplied);
     }
   }  
 }

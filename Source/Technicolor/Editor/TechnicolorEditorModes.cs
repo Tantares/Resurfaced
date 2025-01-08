@@ -15,11 +15,13 @@ namespace Technicolor
     Toggle paletteButton;
 
     KFSMEvent on_goToModePaint;
-    KFSMEvent on_paintSelect;
+    KFSMEvent on_paintApply;
+
     KFSMEvent on_goToModeSample;
-    KFSMEvent on_sampleSelect;
+    KFSMEvent on_sampleApply;
+
     KFSMEvent on_goToModeFill;
-    KFSMEvent on_fillSelect;
+    KFSMEvent on_fillApply;
 
     KFSMState st_paint_select;
     KFSMState st_sample_select;
@@ -40,6 +42,8 @@ namespace Technicolor
 
     EditorToolsUI editorToolsUI;
 
+
+    /// I learn things
     const ConstructionMode paintConstructionMode = (ConstructionMode)5;
     const ConstructionMode sampleConstructionMode = (ConstructionMode)6;
     const ConstructionMode fillConstructionMode = (ConstructionMode)7;
@@ -63,7 +67,7 @@ namespace Technicolor
       GameEvents.onEditorConstructionModeChange.Remove(EditorLogic.fetch.onConstructionModeChanged);
       GameEvents.onEditorConstructionModeChange.Add(onConstructionModeChanged);
 
-      PatchEditorFSM();
+      AddFSM();
     }
 
     void CreateToolButtons()
@@ -121,31 +125,26 @@ namespace Technicolor
     {
       return (KFSMCallback)Delegate.Combine(callbacks);
     }
+
+
     Part selectedPart
     {
       get => EditorLogic.fetch.selectedPart;
       set { EditorLogic.fetch.selectedPart = value; }
     }
-    void PatchEditorFSM()
+    void AddStates(KerbalFSM fsm)
     {
-      KerbalFSM fsm = EditorLogic.fetch.fsm;
-      int layerMask = EditorLogic.fetch.layerMask | 4 | 0x200000;
-
-      // add states
-
       st_paint_select = new KFSMState("st_paint_select")
       {
         OnUpdate = Combine(
           EditorLogic.fetch.UndoRedoInputUpdate,
-          EditorLogic.fetch.snapInputUpdate,
-          EditorLogic.fetch.partSearchUpdate)
+          EditorLogic.fetch.partSearchUpdate),
       };
       fsm.AddState(st_paint_select);
       st_sample_select = new KFSMState("st_sample_select")
       {
         OnUpdate = Combine(
          EditorLogic.fetch.UndoRedoInputUpdate,
-         EditorLogic.fetch.snapInputUpdate,
          EditorLogic.fetch.partSearchUpdate)
       };
       fsm.AddState(st_sample_select);
@@ -153,22 +152,38 @@ namespace Technicolor
       {
         OnUpdate = Combine(
          EditorLogic.fetch.UndoRedoInputUpdate,
-         EditorLogic.fetch.snapInputUpdate,
          EditorLogic.fetch.partSearchUpdate)
       };
       fsm.AddState(st_fill_select);
-      // add events
+    }
 
+    void AddEvents(KerbalFSM fsm, int layerMask)
+    {
+      // Painting
       on_goToModePaint = new KFSMEvent("on_goToModePaint")
       {
         updateMode = KFSMUpdateMode.MANUAL_TRIGGER,
         OnEvent = delegate
         {
-          ScreenMessages.PostScreenMessage(PAINT_ENTER_MESSAGE, EditorLogic.fetch.modeMsg);
-          on_goToModePaint.GoToStateOnEvent = st_paint_select;
+          if (EditorLogic.fetch.selectedPart == null)
+          {
+            ScreenMessages.PostScreenMessage(PAINT_ENTER_MESSAGE, EditorLogic.fetch.modeMsg);
+            on_goToModePaint.GoToStateOnEvent = st_paint_select;
+          }
+          else if (!EditorLogic.fetch.ship.Contains(EditorLogic.fetch.selectedPart))
+          {
+            on_goToModePaint.GoToStateOnEvent = EditorLogic.fetch.st_place;
+            EditorLogic.fetch.on_partPicked.OnEvent();
+          }
+          else
+          {
+            on_goToModePaint.GoToStateOnEvent = st_paint_select;
+          }
         }
       };
+
       fsm.AddEvent(on_goToModePaint,
+        EditorLogic.fetch.st_place,
         EditorLogic.fetch.st_idle,
         EditorLogic.fetch.st_offset_select,
         EditorLogic.fetch.st_offset_tweak,
@@ -179,7 +194,44 @@ namespace Technicolor
         st_sample_select,
         st_fill_select
         );
+      on_paintApply = new KFSMEvent("on_paintApply")
+      {
+        updateMode = KFSMUpdateMode.UPDATE,
+        OnCheckCondition = delegate
+        {
+          if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
+          {
+            selectedPart = EditorLogic.fetch.pickPart(layerMask, Input.GetKey(KeyCode.LeftShift), pickRootIfFrozen: false);
+            if (selectedPart != null)
+            {
+              if (!EditorLogic.fetch.ship.Contains(selectedPart))
+              {
+                // we must be on a floating part, go pick it
+                on_paintApply.GoToStateOnEvent = EditorLogic.fetch.st_place;
+                EditorLogic.fetch.on_partPicked.OnEvent();
+                return false;
+              }
+              var module = selectedPart.FindModuleImplementing<ModuleTechnicolor>();
+              if (module == null)
+              {
+                // Module needs to be present to paint
+                ScreenMessages.PostScreenMessage(PAINT_FAIL_MESSAGE, 1, ScreenMessageStyle.LOWER_CENTER);
+                selectedPart = null;
+                return false;
+              }
+              else
+              {
+                TechnicolorEditorLogic.PaintPart(module);
+                return false;
+              }
+            }
+          }
+          return false;
+        }
+      };
+      fsm.AddEvent(on_paintApply, st_paint_select);
 
+      // Sampling
       on_goToModeSample = new KFSMEvent("on_goToModeSample")
       {
         updateMode = KFSMUpdateMode.MANUAL_TRIGGER,
@@ -200,6 +252,42 @@ namespace Technicolor
         st_paint_select,
         st_fill_select); ;
 
+      on_sampleApply = new KFSMEvent("on_sampleApply")
+      {
+        updateMode = KFSMUpdateMode.UPDATE,
+        OnCheckCondition = delegate
+        {
+          if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
+          {
+            var toSample = EditorLogic.fetch.pickPart(layerMask, Input.GetKey(KeyCode.LeftShift), pickRootIfFrozen: false);
+            if (toSample != null)
+            {
+              if (!EditorLogic.fetch.ship.Contains(toSample))
+              {
+                on_sampleApply.GoToStateOnEvent = EditorLogic.fetch.st_place;
+                EditorLogic.fetch.on_partPicked.OnEvent();
+                return false;
+              }
+              var module = toSample.FindModuleImplementing<ModuleTechnicolor>();
+              if (module == null)
+              {
+                ScreenMessages.PostScreenMessage(SAMPLE_FAIL_MESSAGE, 1, ScreenMessageStyle.LOWER_CENTER);
+                return false;
+              }
+              else
+              {
+                TechnicolorEditorLogic.GetSwatchesFromPart(module);
+              }
+              return false;
+            }
+          }
+
+          return false;
+        }
+      };
+      fsm.AddEvent(on_sampleApply, st_sample_select);
+
+      /// Filling
       on_goToModeFill = new KFSMEvent("on_goToModeFill")
       {
         updateMode = KFSMUpdateMode.MANUAL_TRIGGER,
@@ -220,7 +308,8 @@ namespace Technicolor
         st_paint_select,
         st_sample_select); ;
 
-      on_paintSelect = new KFSMEvent("on_paintSelect")
+     
+      on_fillApply = new KFSMEvent("on_fillApply")
       {
         updateMode = KFSMUpdateMode.UPDATE,
         OnCheckCondition = delegate
@@ -232,85 +321,14 @@ namespace Technicolor
             {
               if (!EditorLogic.fetch.ship.Contains(toPaint))
               {
-                //on_paintSelect.GoToStateOnEvent = EditorLogic.fetch.st_place;
-                //EditorLogic.fetch.on_partPicked.OnEvent();
-                return false;
-              }
-              var module = toPaint.FindModuleImplementing<ModuleTechnicolor>();
-              if (module == null)
-              {
-                ScreenMessages.PostScreenMessage(PAINT_FAIL_MESSAGE, 1, ScreenMessageStyle.LOWER_CENTER);
-
-                return false;
-              }
-              else
-              {
-                module.SetPartSwatches(TechnicolorEditorLogic.SwatchData);
-              }
-              return false;
-            }
-          }
-
-          return false;
-        }
-      };
-      fsm.AddEvent(on_paintSelect, st_paint_select);
-
-      on_sampleSelect = new KFSMEvent("on_sampleSelect")
-      {
-        updateMode = KFSMUpdateMode.UPDATE,
-        OnCheckCondition = delegate
-        {
-          if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
-          {
-            var toSample = EditorLogic.fetch.pickPart(layerMask, Input.GetKey(KeyCode.LeftShift), pickRootIfFrozen: false);
-            if (toSample != null)
-            {
-              if (!EditorLogic.fetch.ship.Contains(toSample))
-              {
-                on_sampleSelect.GoToStateOnEvent = EditorLogic.fetch.st_place;
-                EditorLogic.fetch.on_partPicked.OnEvent();
-                return false;
-              }
-              var module = toSample.FindModuleImplementing<ModuleTechnicolor>();
-              if (module == null)
-              {
-                ScreenMessages.PostScreenMessage(SAMPLE_FAIL_MESSAGE, 1, ScreenMessageStyle.LOWER_CENTER);
-                return false;
-              }
-              else
-              {
-                module.GetPartSwatches(TechnicolorEditorLogic.SwatchData);
-                TechnicolorEditorLogic.SetSwatchesSampled();
-              }
-              return false;
-            }
-          }
-
-          return false;
-        }
-      };
-      fsm.AddEvent(on_sampleSelect, st_sample_select);
-      on_fillSelect = new KFSMEvent("on_fillSelect")
-      {
-        updateMode = KFSMUpdateMode.UPDATE,
-        OnCheckCondition = delegate
-        {
-          if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
-          {
-            var toPaint = EditorLogic.fetch.pickPart(layerMask, Input.GetKey(KeyCode.LeftShift), pickRootIfFrozen: false);
-            if (toPaint != null)
-            {
-              if (!EditorLogic.fetch.ship.Contains(toPaint))
-              {
-                on_fillSelect.GoToStateOnEvent = EditorLogic.fetch.st_place;
+                on_fillApply.GoToStateOnEvent = EditorLogic.fetch.st_place;
                 EditorLogic.fetch.on_partPicked.OnEvent();
                 return false;
               }
               var module = toPaint.FindModuleImplementing<ModuleTechnicolor>();
               if (module != null)
               {
-                module.SetPartSwatches(TechnicolorEditorLogic.SwatchData);
+                TechnicolorEditorLogic.PaintPart(module);
               }
 
               foreach (Part p in EditorLogic.FindPartsInChildren(toPaint))
@@ -318,12 +336,9 @@ namespace Technicolor
                 module = p.FindModuleImplementing<ModuleTechnicolor>();
                 if (module != null)
                 {
-                  module.SetPartSwatches(TechnicolorEditorLogic.SwatchData);
+                  TechnicolorEditorLogic.PaintPart(module);
                 }
               }
-
-              
-
               return false;
             }
           }
@@ -331,8 +346,9 @@ namespace Technicolor
           return false;
         }
       };
-      fsm.AddEvent(on_fillSelect, st_fill_select);
+      fsm.AddEvent(on_fillApply, st_fill_select);
 
+      /// Each of these default events needs the new destination states added
       fsm.AddEvent(EditorLogic.fetch.on_goToModeRotate, st_paint_select, st_sample_select, st_fill_select);
       fsm.AddEvent(EditorLogic.fetch.on_goToModePlace, st_paint_select, st_sample_select, st_fill_select);
       fsm.AddEvent(EditorLogic.fetch.on_goToModeOffset, st_paint_select, st_sample_select, st_fill_select);
@@ -342,6 +358,14 @@ namespace Technicolor
       fsm.AddEvent(EditorLogic.fetch.on_partOverInventoryPAW, st_paint_select, st_sample_select, st_fill_select);
       fsm.AddEvent(EditorLogic.fetch.on_newShip, st_paint_select, st_sample_select, st_fill_select);
       fsm.AddEvent(EditorLogic.fetch.on_shipLoaded, st_paint_select, st_sample_select, st_fill_select);
+    }
+    void AddFSM()
+    {
+      KerbalFSM fsm = EditorLogic.fetch.fsm;
+      int layerMask = EditorLogic.fetch.layerMask | 4 | 0x200000;
+
+      AddStates(fsm);
+      AddEvents(fsm, layerMask);
     }
 
     void Update()

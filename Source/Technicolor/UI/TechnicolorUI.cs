@@ -35,7 +35,8 @@ namespace Technicolor
       GameObject newUIPanel = (GameObject)Instantiate(TechnicolorAssets.SwatchWindowPrefab, Vector3.zero, Quaternion.identity);
       newUIPanel.transform.SetParent(UIMasterController.Instance.dialogCanvas.transform);
       newUIPanel.transform.localScale = Vector3.one;
-      newUIPanel.transform.localPosition = new Vector3(0.5f, 0.75f,0f);
+      newUIPanel.transform.position = EditorLogic.fetch.toolsUI.rootButton.transform.position + new Vector3(200, 0, 0f);
+      ;
 
       MaterialWindow = newUIPanel.AddComponent<UIMaterialPaintWindow>();
       MaterialWindow.SetVisible(false);

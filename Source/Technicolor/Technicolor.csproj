@@ -52,6 +52,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="UI\EditorRollover.cs" />
     <Compile Include="Editor\TechnicolorEditorModes.cs" />
     <Compile Include="Editor\TechnicolorSwatchData.cs" />
     <Compile Include="MaterialUtils.cs" />
@@ -59,6 +60,10 @@
     <Compile Include="Modules\ModuleTechnicolor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="SkyCapture.cs" />
+    <Compile Include="UI\UIEditorRolloverPanel.cs" />
+    <Compile Include="UI\UISwatchZoneWidget.cs" />
+    <Compile Include="ZoneLibrary.cs" />
     <Compile Include="SwatchLibrary.cs" />
     <Compile Include="SwatchRenderUtility.cs" />
     <Compile Include="TechnicolorAssets.cs" />
@@ -71,8 +76,8 @@
     <Compile Include="UI\UIMaterialPaintWindow.cs" />
     <Compile Include="UI\TechnicolorUI.cs" />
     <Compile Include="UI\UISwatchSlotButton.cs" />
-    <Compile Include="UI\UISwatch.cs" />
-    <Compile Include="UI\UISwatchGroup.cs" />
+    <Compile Include="UI\UILibrarySwatch.cs" />
+    <Compile Include="UI\UILibrarySwatchGroup.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="TechnicolorData.cs" />
     <Compile Include="TechnicolorConstants.cs" />

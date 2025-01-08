@@ -7,7 +7,7 @@ namespace Technicolor
 {
   public static class Tooltips
   {
-    public static void AddTooltip(GameObject targetObject, Tooltip_Text prefab, string tooltipText)
+    public static TooltipController_Text AddTooltip(GameObject targetObject, Tooltip_Text prefab, string tooltipText)
     {
       if (!targetObject.GetComponent<Selectable>())
       {
@@ -21,6 +21,7 @@ namespace Technicolor
       tooltip.prefab = prefab;
       tooltip.RequireInteractable = false;
       tooltip.textString = tooltipText;
+      return tooltip;
     }
 
     public static Tooltip_Text FindTextTooltipPrefab()

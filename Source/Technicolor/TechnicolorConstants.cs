@@ -8,6 +8,11 @@ namespace Technicolor
 
     public static string SWATCH_LIBRARY_CONFIG_NODE = "TECHNICOLOR_SWATCHES";
     public static string SWATCH_CONFIG_NODE = "PRESET_SWATCH";
+
+
+    public static string EDITORZONE_LIBRARY_CONFIG_NODE = "TECHNICOLOR_ZONES";
+    public static string EDITORZONE_CONFIG_NODE = "EDITOR_COLOR_ZONE";
+
     public static string SWATCH_PERSISTENCE_NODE = "EDITORSWATCHCONFIG";
 
     public static string MODULE_COLOR_NODE = "COLORZONE";

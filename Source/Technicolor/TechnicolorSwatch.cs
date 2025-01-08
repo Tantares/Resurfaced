@@ -88,7 +88,7 @@ namespace Technicolor
         Thumbnail = Sprite.Create(texture, new Rect(Settings.SwatchRenderResolution * 2, 0.0f, Settings.SwatchRenderResolution, texture.height), new Vector2(0.5f, 0.5f));
         return;
       }
-      Utils.Log($"[TechnicolorSwatch] Skipping render for {_name}", LogType.UI);
+      //Utils.Log($"[TechnicolorSwatch] Skipping render for {_name}", LogType.UI);
     }
   }
 }
