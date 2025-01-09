@@ -66,7 +66,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
     _panelTitle.text = Localizer.Format("#LOC_Technicolor_UI_MaterialWindow_Title");
     _zoneWidgets = new();
 
-    foreach (var zoneData in TechnicolorEditorLogic.SwatchData.Zones)
+    foreach (var zoneData in TechnicolorEditorLogic.EditorData.Zones)
     {
       var widget = Instantiate(TechnicolorAssets.SwatchWidgetPrefab);
       widget.transform.SetParent(_zonesBase, false);
@@ -81,7 +81,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
 
     ResetEditorUISwatches();
     //_zoneAddButton.onClick.AddListener(delegate { OnAddZone(); });
-    _zoneDropdown.AddOptions(TechnicolorEditorLogic.SwatchData.Zones.Select(x => x.DisplayName)
+    _zoneDropdown.AddOptions(TechnicolorEditorLogic.EditorData.Zones.Select(x => x.DisplayName)
                                .ToList());
     _zoneDropdown.onValueChanged.AddListener(delegate { OnAddZone(); });
     /// set up the library panel
@@ -121,7 +121,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
   public void OnAddZone()
   {
     // Adding is actually just flipping the visible switch to true and refreshing the list
-    foreach (var zoneData in TechnicolorEditorLogic.SwatchData.Zones)
+    foreach (var zoneData in TechnicolorEditorLogic.EditorData.Zones)
     {
       if (_zoneDropdown.options[_zoneDropdown.value].text == zoneData.DisplayName)
       {
@@ -153,7 +153,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
     {
       _currentSlotType = slotType;
       _currentZone = zoneName;
-      foreach (var zoneData in TechnicolorEditorLogic.SwatchData.Zones)
+      foreach (var zoneData in TechnicolorEditorLogic.EditorData.Zones)
       {
         if (_currentZone == zoneData.ZoneName)
         {
@@ -177,7 +177,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
     }
   }
 
-  protected void ShowLibraryForZoneAndSlot(TechnicolorPersistentZoneData zoneData)
+  protected void ShowLibraryForZoneAndSlot(EditorZoneData editorZoneData)
   {
     SetLibraryVisible(true);
     foreach (var group in _swatchLibraryGroups)
@@ -185,20 +185,20 @@ public class UIMaterialPaintWindow : MonoBehaviour
       group.gameObject.SetActive(false);
 
       if (_currentSlotType == SwatchSlot.Primary)
-        group.HighlightSwatch(zoneData.PrimarySwatch);
+        group.HighlightSwatch(editorZoneData.PrimarySwatch);
       else
-        group.HighlightSwatch(zoneData.SecondarySwatch);
+        group.HighlightSwatch(editorZoneData.SecondarySwatch);
     }
 
-    FilterLibraryGroups(zoneData);
+    FilterLibraryGroups(editorZoneData);
   }
 
-  protected void FilterLibraryGroups(TechnicolorPersistentZoneData zoneData)
+  protected void FilterLibraryGroups(EditorZoneData editorZoneData)
   {
-    var validGroups = ZoneLibrary.GetValidGroupsForZone(zoneData.ZoneName).ToList();
+    var validGroups = ZoneLibrary.GetValidGroupsForZone(editorZoneData.ZoneName).ToList();
     foreach (var group in _swatchLibraryGroups)
     {
-      if (!zoneData.RestrictToMaterialGroups)
+      if (!editorZoneData.RestrictToMaterialGroups)
       {
         group.gameObject.SetActive(true);
       }
@@ -212,7 +212,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
     }
   }
 
-  public void OnSelectSwatch(TechnicolorSwatch newSwatch)
+  public void OnSelectSwatch(Swatch newSwatch)
   {
     // we clicked on a swatch and need to assign it to the current slot
     Utils.Log(
@@ -227,7 +227,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
       }
     }
 
-    foreach (var zoneData in TechnicolorEditorLogic.SwatchData.Zones)
+    foreach (var zoneData in TechnicolorEditorLogic.EditorData.Zones)
     {
       if (_currentZone == zoneData.ZoneName)
       {
@@ -253,7 +253,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
   {
     foreach (var widget in _zoneWidgets)
     {
-      foreach (var zoneData in TechnicolorEditorLogic.SwatchData.Zones)
+      foreach (var zoneData in TechnicolorEditorLogic.EditorData.Zones)
       {
         if (widget.zoneName == zoneData.ZoneName)
         {

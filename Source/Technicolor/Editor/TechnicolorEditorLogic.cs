@@ -5,15 +5,15 @@ namespace Technicolor;
 [KSPAddon(KSPAddon.Startup.EditorAny, false)]
 public class TechnicolorEditorLogic : MonoBehaviour
 {
-  public static TechnicolorSwatchData SwatchData;
+  public static EditorData EditorData;
   public static TechnicolorEditorLogic Instance;
   public static TechnicolorEditorRollover Rollover;
 
   public void Start()
   {
-    if (SwatchData == null)
+    if (EditorData == null)
     {
-      SwatchData = new();
+      EditorData = new();
     }
 
     EditorLogic.fetch.toolsUI.gameObject.AddComponent<TechnicolorEditorModes>();
@@ -25,14 +25,14 @@ public class TechnicolorEditorLogic : MonoBehaviour
   public static void GetSwatchesFromPart(ModuleTechnicolor module)
   {
     Utils.Log($"[TechnicolorEditorLogic] Getting swatches from part", LogType.Editor);
-    module.GetPartSwatches(ref SwatchData);
+    module.GetPartSwatches(ref EditorData);
     TechnicolorUI.Instance.MaterialWindow.SetUISwatches();
   }
 
   public static void PaintPart(ModuleTechnicolor module)
   {
     Utils.Log($"[TechnicolorEditorLogic] Painting part", LogType.Editor);
-    module.SetPartSwatches(SwatchData);
+    module.SetPartSwatches(EditorData);
   }
 
   /// <summary>

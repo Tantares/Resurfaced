@@ -5,11 +5,11 @@ namespace Technicolor;
 
 public static class SwatchLibrary
 {
-  public static readonly TechnicolorSwatch DefaultSwatch = new();
-  public static readonly List<TechnicolorSwatch> Swatches = [DefaultSwatch];
-  public static readonly Dictionary<string, TechnicolorSwatchGroup> SwatchGroups = new();
+  public static readonly Swatch DefaultSwatch = new();
+  public static readonly List<Swatch> Swatches = [DefaultSwatch];
+  public static readonly Dictionary<string, SwatchGroup> SwatchGroups = new();
 
-  private static readonly Dictionary<string, TechnicolorSwatch> _swatchNameCache = new();
+  private static readonly Dictionary<string, Swatch> _swatchNameCache = new();
 
   public static bool HasSwatch(string name)
   {
@@ -18,7 +18,7 @@ public static class SwatchLibrary
       return true;
     }
 
-    if (Swatches.Find(s => s.Name == name) is TechnicolorSwatch sw)
+    if (Swatches.Find(s => s.Name == name) is Swatch sw)
     {
       _swatchNameCache.Add(name, sw);
       return true;
@@ -27,7 +27,7 @@ public static class SwatchLibrary
     return false;
   }
 
-  public static TechnicolorSwatch GetSwatch(string name)
+  public static Swatch GetSwatch(string name)
   {
     if (HasSwatch(name))
     {
@@ -41,9 +41,9 @@ public static class SwatchLibrary
   public static void Load()
   {
     Utils.Log($"[SwatchLibrary] Loading Swatches", LogType.Loading);
-    foreach (var node in GameDatabase.Instance.GetConfigNodes(TechnicolorConstants.SWATCH_LIBRARY_CONFIG_NODE))
+    foreach (var node in GameDatabase.Instance.GetConfigNodes(Constants.SWATCH_LIBRARY_CONFIG_NODE))
     {
-      foreach (var subNode in node.GetNodes(TechnicolorConstants.SWATCH_CONFIG_NODE))
+      foreach (var subNode in node.GetNodes(Constants.SWATCH_CONFIG_NODE))
       {
         try
         {
@@ -56,17 +56,17 @@ public static class SwatchLibrary
       }
     }
 
-    IComparer<TechnicolorSwatch> comparer = new TechnicolorSwatchComparer();
+    IComparer<Swatch> comparer = new TechnicolorSwatchComparer();
     Swatches.Sort(comparer);
 
     Utils.Log($"[SwatchLibrary] Loaded {Swatches.Count} Swatches", LogType.Loading);
-    foreach (var node in GameDatabase.Instance.GetConfigNodes(TechnicolorConstants.GROUP_LIBRARY_CONFIG_NODE))
+    foreach (var node in GameDatabase.Instance.GetConfigNodes(Constants.GROUP_LIBRARY_CONFIG_NODE))
     {
-      foreach (var subNode in node.GetNodes(TechnicolorConstants.GROUP_CONFIG_NODE))
+      foreach (var subNode in node.GetNodes(Constants.GROUP_CONFIG_NODE))
       {
         try
         {
-          TechnicolorSwatchGroup sg = new(subNode);
+          SwatchGroup sg = new(subNode);
           SwatchGroups.Add(sg.Name, sg);
         }
         catch
@@ -79,9 +79,9 @@ public static class SwatchLibrary
     Utils.Log($"[SwatchLibrary] Loaded {SwatchGroups.Count} Swatch Groups", LogType.Loading);
   }
 
-  public class TechnicolorSwatchComparer : IComparer<TechnicolorSwatch>
+  public class TechnicolorSwatchComparer : IComparer<Swatch>
   {
-    public int Compare(TechnicolorSwatch x, TechnicolorSwatch y)
+    public int Compare(Swatch x, Swatch y)
     {
       Color.RGBToHSV(x.Color, out float h1, out float _, out float _);
       Color.RGBToHSV(y.Color, out float h2, out float _, out float _);

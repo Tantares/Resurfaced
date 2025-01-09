@@ -2,7 +2,7 @@
 
 namespace Technicolor;
 
-public static class TechnicolorConstants
+public static class Constants
 {
   public static string SETTINGS_CONFIG_NODE =
     "Technicolor/TechnicolorSettings/TECHNICOLOR_SETTINGS";

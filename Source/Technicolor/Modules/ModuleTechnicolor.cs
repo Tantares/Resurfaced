@@ -32,7 +32,7 @@ public class ModuleTechnicolor : PartModule
         {
           if (FirstPlaced)
           {
-            var z = TechnicolorEditorLogic.SwatchData.GetZone(zones[i].ZoneName);
+            var z = TechnicolorEditorLogic.EditorData.GetZone(zones[i].ZoneName);
             if (z.AutoApply)
             {
               zones[i].Initialize(part, z.PrimarySwatch.Name, z.SecondarySwatch.Name);
@@ -54,7 +54,7 @@ public class ModuleTechnicolor : PartModule
   {
     base.OnLoad(node);
 
-    var zoneNodes = node.GetNodes(TechnicolorConstants.MODULE_COLOR_NODE);
+    var zoneNodes = node.GetNodes(Constants.MODULE_COLOR_NODE);
 
     int zoneCount = Mathf.Max(1, zoneNodes.Length);
     zones = new ColorZone[zoneCount];
@@ -80,14 +80,14 @@ public class ModuleTechnicolor : PartModule
     {
       for (int i = 0; i < zones.Length; i++)
       {
-        var zoneNode = new ConfigNode(TechnicolorConstants.MODULE_COLOR_NODE);
+        var zoneNode = new ConfigNode(Constants.MODULE_COLOR_NODE);
         zones[i].Save(zoneNode);
         node.AddNode(zoneNode);
       }
     }
   }
 
-  public void SetPartSwatches(TechnicolorSwatchData swatches)
+  public void SetPartSwatches(EditorData swatches)
   {
     foreach (var zoneData in swatches.Zones)
     {
@@ -98,7 +98,7 @@ public class ModuleTechnicolor : PartModule
     }
   }
 
-  public void SetSwatchesForSlot(TechnicolorPersistentZoneData slotData)
+  public void SetSwatchesForSlot(EditorZoneData slotData)
   {
     Utils.Log($"[ModuleTechnicolor] Applying swatches for zone {slotData.ZoneName} To part",
               LogType.Editor);
@@ -113,7 +113,7 @@ public class ModuleTechnicolor : PartModule
     }
   }
 
-  public void GetPartSwatches(ref TechnicolorSwatchData swatches)
+  public void GetPartSwatches(ref EditorData swatches)
   {
     foreach (var zoneData in swatches.Zones)
     {

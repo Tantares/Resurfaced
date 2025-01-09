@@ -10,9 +10,9 @@ public static class ZoneLibrary
   {
     Utils.Log($"[ZoneLibrary] Loading Zones", LogType.Loading);
     foreach (var node in GameDatabase.Instance.GetConfigNodes(
-               TechnicolorConstants.EDITORZONE_LIBRARY_CONFIG_NODE))
+               Constants.EDITORZONE_LIBRARY_CONFIG_NODE))
     {
-      foreach (var subNode in node.GetNodes(TechnicolorConstants.EDITORZONE_CONFIG_NODE))
+      foreach (var subNode in node.GetNodes(Constants.EDITORZONE_CONFIG_NODE))
       {
         try
         {

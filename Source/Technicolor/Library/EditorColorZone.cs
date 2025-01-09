@@ -19,10 +19,10 @@ public class EditorColorZone
   [Persistent(name = "DefaultSecondarySwatch")]
   private string _defaultSecondarySwatchName = SwatchLibrary.DefaultSwatch.Name;
 
-  public TechnicolorSwatch DefaultPrimarySwatch =>
+  public Swatch DefaultPrimarySwatch =>
     SwatchLibrary.GetSwatch(_defaultPrimarySwatchName);
 
-  public TechnicolorSwatch DefaultSecondarySwatch =>
+  public Swatch DefaultSecondarySwatch =>
     SwatchLibrary.GetSwatch(_defaultSecondarySwatchName);
 
   public EditorColorZone() { }

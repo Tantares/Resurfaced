@@ -1,11 +1,11 @@
 ﻿namespace Technicolor;
 
-public class TechnicolorPersistentZoneData
+public class EditorZoneData
 {
   public string ZoneName = "main";
   public string DisplayName = "Main";
-  public TechnicolorSwatch PrimarySwatch;
-  public TechnicolorSwatch SecondarySwatch;
+  public Swatch PrimarySwatch;
+  public Swatch SecondarySwatch;
 
   public bool RestrictToMaterialGroups = true;
   public bool AutoApply = false;
@@ -19,7 +19,7 @@ public class TechnicolorPersistentZoneData
   private const string NODE_RESTRICT_SWATCHES = "RestrictToMaterialGroups";
   private const string NODE_APPLY_AUTOMATICALLY = "ApplyAutomatically";
 
-  public TechnicolorPersistentZoneData(EditorColorZone edZone)
+  public EditorZoneData(EditorColorZone edZone)
   {
     ZoneName = edZone.Name;
     DisplayName = edZone.DisplayName;
@@ -35,14 +35,14 @@ public class TechnicolorPersistentZoneData
     }
   }
 
-  public TechnicolorPersistentZoneData(ConfigNode node)
+  public EditorZoneData(ConfigNode node)
   {
     Load(node);
   }
 
   public ConfigNode Save()
   {
-    var node = new ConfigNode(TechnicolorConstants.PERSISTENCE_ZONE_NODE);
+    var node = new ConfigNode(Constants.PERSISTENCE_ZONE_NODE);
     node.AddValue(NODE_NAME, ZoneName);
     node.AddValue(NODE_PRIMARY, PrimarySwatch.Name);
     node.AddValue(NODE_SECONDARY, SecondarySwatch.Name);

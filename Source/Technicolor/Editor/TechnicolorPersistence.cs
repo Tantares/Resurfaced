@@ -15,10 +15,10 @@ public class TechnicolorPersistence : ScenarioModule
   {
     Utils.Log("[TechnicolorPersistence]: Started Loading", LogType.Loading);
     base.OnLoad(node);
-    var swatchData = node.GetNode(TechnicolorConstants.PERSISTENCE_NODE);
-    if (swatchData != null && TechnicolorEditorLogic.SwatchData != null)
+    var swatchSpec = node.GetNode(Constants.PERSISTENCE_NODE);
+    if (swatchSpec != null && TechnicolorEditorLogic.EditorData != null)
     {
-      TechnicolorEditorLogic.SwatchData.Load(swatchData);
+      TechnicolorEditorLogic.EditorData.Load(swatchSpec);
     }
 
     Utils.Log("[TechnicolorPersistence]: Done Loading", LogType.Loading);
@@ -28,8 +28,8 @@ public class TechnicolorPersistence : ScenarioModule
   {
     Utils.Log("[TechnicolorPersistence]: Started Saving", LogType.Loading);
     base.OnSave(node);
-    ConfigNode swatchNode = new(TechnicolorConstants.PERSISTENCE_NODE);
-    TechnicolorEditorLogic.SwatchData.Save(swatchNode);
+    ConfigNode swatchNode = new(Constants.PERSISTENCE_NODE);
+    TechnicolorEditorLogic.EditorData.Save(swatchNode);
     node.AddNode(swatchNode);
 
     Utils.Log("[TechnicolorPersistence]: Finished Saving", LogType.Loading);

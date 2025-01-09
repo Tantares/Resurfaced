@@ -6,9 +6,9 @@ namespace Technicolor;
 
 public class UILibrarySwatch : MonoBehaviour
 {
-  public TechnicolorSwatch Swatch => _swatch;
+  public Swatch Swatch => _swatch;
 
-  protected TechnicolorSwatch _swatch;
+  protected Swatch _swatch;
   [SerializeField] protected Button _button;
   [SerializeField] protected Image _image;
   [SerializeField] protected Image _highlight;
@@ -42,7 +42,7 @@ public class UILibrarySwatch : MonoBehaviour
     SetHighlightState(true);
   }
 
-  public void AssignSwatch(TechnicolorSwatch librarySwatch)
+  public void AssignSwatch(Swatch librarySwatch)
   {
     _swatch = librarySwatch;
     _tooltip.prefab = UIUtils.FindTextTooltipPrefab();

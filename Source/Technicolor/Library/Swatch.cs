@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Technicolor;
 
-public class TechnicolorSwatch
+public class Swatch
 {
   [Persistent] public string Name = "default";
   [Persistent(name = "DisplayName")] private string _displayName = "Default";
@@ -19,9 +19,9 @@ public class TechnicolorSwatch
   public Sprite ThumbnailLeft;
   public Sprite ThumbnailRight;
 
-  public TechnicolorSwatch() { }
+  public Swatch() { }
 
-  public TechnicolorSwatch(ConfigNode node)
+  public Swatch(ConfigNode node)
   {
     ConfigNode.LoadObjectFromConfig(this, node);
     DisplayName = Localizer.Format(_displayName);

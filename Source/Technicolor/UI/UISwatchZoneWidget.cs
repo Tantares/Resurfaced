@@ -97,7 +97,7 @@ public class UISwatchZoneWidget : MonoBehaviour
     }
   }
 
-  public void AssignZoneData(TechnicolorPersistentZoneData slotData)
+  public void AssignZoneData(EditorZoneData slotData)
   {
     zoneName = slotData.ZoneName;
     _title.text = slotData.DisplayName;
@@ -123,7 +123,7 @@ public class UISwatchZoneWidget : MonoBehaviour
     TechnicolorUI.Instance.MaterialWindow.SelectZoneAndSlotForEdit(zoneName, slotType);
   }
 
-  public void OnSelectSwatch(TechnicolorSwatch newSwatch, SwatchSlot slotType)
+  public void OnSelectSwatch(Swatch newSwatch, SwatchSlot slotType)
   {
     if (slotType == SwatchSlot.Primary)
       _primarySlotButton.OnSetSwatch(newSwatch);
@@ -131,7 +131,7 @@ public class UISwatchZoneWidget : MonoBehaviour
       _secondarySlotButton.OnSetSwatch(newSwatch);
   }
 
-  public void OnSelectSwatch(TechnicolorSwatch primarySwatch, TechnicolorSwatch secondarySwatch)
+  public void OnSelectSwatch(Swatch primarySwatch, Swatch secondarySwatch)
   {
     _primarySlotButton.OnSetSwatch(primarySwatch);
     _secondarySlotButton.OnSetSwatch(secondarySwatch);
@@ -139,7 +139,7 @@ public class UISwatchZoneWidget : MonoBehaviour
 
   public void OnToggleAutoApply()
   {
-    foreach (var swatch in TechnicolorEditorLogic.SwatchData.Zones)
+    foreach (var swatch in TechnicolorEditorLogic.EditorData.Zones)
     {
       if (swatch.ZoneName == zoneName)
       {
@@ -150,7 +150,7 @@ public class UISwatchZoneWidget : MonoBehaviour
 
   public void OnToggleRestrictions()
   {
-    foreach (var swatch in TechnicolorEditorLogic.SwatchData.Zones)
+    foreach (var swatch in TechnicolorEditorLogic.EditorData.Zones)
     {
       if (swatch.ZoneName == zoneName)
       {

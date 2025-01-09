@@ -2,11 +2,11 @@
 
 namespace Technicolor;
 
-public class TechnicolorSwatchData
+public class EditorData
 {
-  public List<TechnicolorPersistentZoneData> Zones;
+  public List<EditorZoneData> Zones;
 
-  public TechnicolorSwatchData()
+  public EditorData()
   {
     Zones = new();
     foreach (var zone in ZoneLibrary.EditorColorZones.Values)
@@ -15,7 +15,7 @@ public class TechnicolorSwatchData
     }
   }
 
-  public TechnicolorPersistentZoneData GetZone(string name)
+  public EditorZoneData GetZone(string name)
   {
     for (int i = 0; i < Zones.Count; i++)
     {
@@ -41,7 +41,7 @@ public class TechnicolorSwatchData
 
     foreach (var zoneNode in node.GetNodes("EDITOR_COLOR_ZONE"))
     {
-      TechnicolorPersistentZoneData loadedData = new(zoneNode);
+      EditorZoneData loadedData = new(zoneNode);
       if (Zones.Find(x => x.ZoneName == loadedData.ZoneName) == null)
       {
         Zones.Add(loadedData);

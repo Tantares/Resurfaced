@@ -36,7 +36,7 @@ public static class Settings
 
     _loadedOnce = true;
     var settingsNode =
-      GameDatabase.Instance.GetConfigNode(TechnicolorConstants.SETTINGS_CONFIG_NODE);
+      GameDatabase.Instance.GetConfigNode(Constants.SETTINGS_CONFIG_NODE);
 
     Utils.Log("[Settings]: Started loading", LogType.Settings);
     if (settingsNode != null)

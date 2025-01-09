@@ -126,7 +126,7 @@ public static class SwatchRenderUtility
     GameObject swatchPrefab,
     int resolution,
     Material sky,
-    TechnicolorSwatch swatch,
+    Swatch swatch,
     float elevation = 0,
     float azimuth = 0,
     float pitch = 0,

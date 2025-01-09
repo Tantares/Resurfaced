@@ -56,7 +56,7 @@ public class UISwatchSlotButton
     _parentWidget.SelectSlotToEdit(SwatchSlot);
   }
 
-  public void OnSetSwatch(TechnicolorSwatch newSwatch)
+  public void OnSetSwatch(Swatch newSwatch)
   {
     newSwatch.GenerateThumbnail();
     if (SwatchSlot == SwatchSlot.Primary)

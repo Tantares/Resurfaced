@@ -2,14 +2,14 @@
 
 namespace Technicolor;
 
-public class TechnicolorSwatchGroup
+public class SwatchGroup
 {
   [Persistent(name = "name")] public string Name = "default";
   [Persistent] public string DisplayName = "Default";
 
-  public TechnicolorSwatchGroup() { }
+  public SwatchGroup() { }
 
-  public TechnicolorSwatchGroup(ConfigNode node)
+  public SwatchGroup(ConfigNode node)
   {
     ConfigNode.LoadObjectFromConfig(this, node);
     DisplayName = Localizer.Format(DisplayName);

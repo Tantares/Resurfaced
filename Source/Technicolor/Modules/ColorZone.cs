@@ -8,16 +8,16 @@ namespace Technicolor;
 [Serializable]
 public class ColorZone : ScriptableObject
 {
-  public TechnicolorSwatch PrimarySwatch => _primarySwatch;
-  public TechnicolorSwatch SecondarySwatch => _secondarySwatch;
+  public Swatch PrimarySwatch => _primarySwatch;
+  public Swatch SecondarySwatch => _secondarySwatch;
 
   [SerializeField] public string ZoneName = "main";
   [SerializeField] public string PrimarySwatchName = "";
   [SerializeField] public string SecondarySwatchName = "";
   [SerializeField] private string[] _transforms;
 
-  private TechnicolorSwatch _primarySwatch;
-  private TechnicolorSwatch _secondarySwatch;
+  private Swatch _primarySwatch;
+  private Swatch _secondarySwatch;
 
   private Part _part;
   private Material[] _materials;
@@ -90,7 +90,7 @@ public class ColorZone : ScriptableObject
     List<Material> mats = new();
     for (int i = 0; i < renderers.Count; i++)
     {
-      if (renderers[i].material.shader.name == TechnicolorConstants.TEAMCOLOR_SHADER_NAME)
+      if (renderers[i].material.shader.name == Constants.TEAMCOLOR_SHADER_NAME)
       {
         mats.Add(renderers[i].material);
       }
@@ -108,7 +108,7 @@ public class ColorZone : ScriptableObject
     _secondarySwatch = SwatchLibrary.GetSwatch(secondaryName);
   }
 
-  public void SetSwatch(TechnicolorSwatch primary, TechnicolorSwatch secondary)
+  public void SetSwatch(Swatch primary, Swatch secondary)
   {
     PrimarySwatchName = primary.Name;
     SecondarySwatchName = secondary.Name;

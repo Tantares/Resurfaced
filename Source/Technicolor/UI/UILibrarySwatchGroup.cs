@@ -7,13 +7,13 @@ namespace Technicolor;
 public class UILibrarySwatchGroup : MonoBehaviour
 {
   public bool SwatchesShown { get; private set; }
-  public TechnicolorSwatchGroup Group => _group;
+  public SwatchGroup Group => _group;
   [SerializeField] protected Button _headerButton;
   [SerializeField] protected Text _headerText;
   [SerializeField] protected GameObject _swatches;
   [SerializeField] protected Transform _swatchParent;
 
-  protected TechnicolorSwatchGroup _group;
+  protected SwatchGroup _group;
   protected List<UILibrarySwatch> _swatchIcons;
 
   public void Awake()
@@ -30,7 +30,7 @@ public class UILibrarySwatchGroup : MonoBehaviour
     _swatches = _swatchParent.gameObject;
   }
 
-  public void SetGroup(TechnicolorSwatchGroup group)
+  public void SetGroup(SwatchGroup group)
   {
     _group = group;
     SwatchesShown = true;
@@ -82,7 +82,7 @@ public class UILibrarySwatchGroup : MonoBehaviour
     ToggleSwatchesShown();
   }
 
-  public void HighlightSwatch(TechnicolorSwatch swatch)
+  public void HighlightSwatch(Swatch swatch)
   {
     foreach (var libSwatch in _swatchIcons)
     {
