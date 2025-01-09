@@ -1,43 +1,37 @@
-﻿
-namespace Technicolor
+﻿namespace Technicolor;
+
+[KSPScenario(ScenarioCreationOptions.AddToAllGames, GameScenes.EDITOR)]
+public class TechnicolorPersistence : ScenarioModule
 {
-  [KSPScenario(ScenarioCreationOptions.AddToAllGames, GameScenes.EDITOR)]
-  public class TechnicolorPersistence : ScenarioModule
+  public static TechnicolorPersistence Instance { get; private set; }
+
+  public override void OnAwake()
   {
-    public static TechnicolorPersistence Instance { get; private set; }
+    Instance = this;
+    base.OnAwake();
+  }
 
-    public override void OnAwake()
+  public override void OnLoad(ConfigNode node)
+  {
+    Utils.Log("[TechnicolorPersistence]: Started Loading", LogType.Loading);
+    base.OnLoad(node);
+    var swatchData = node.GetNode(TechnicolorConstants.PERSISTENCE_NODE);
+    if (swatchData != null && TechnicolorEditorLogic.SwatchData != null)
     {
-     
-      Instance = this;
-      base.OnAwake();
-
+      TechnicolorEditorLogic.SwatchData.Load(swatchData);
     }
 
-    public override void OnLoad(ConfigNode node)
-    {
-      Utils.Log("[TechnicolorPersistence]: Started Loading", LogType.Loading);
-      base.OnLoad(node);
-      ConfigNode swatchData = node.GetNode(TechnicolorConstants.PERSISTENCE_NODE);
-      if (swatchData != null && TechnicolorEditorLogic.SwatchData != null)
-      {
-        TechnicolorEditorLogic.SwatchData.Load(swatchData);
-      }
-      Utils.Log("[TechnicolorPersistence]: Done Loading", LogType.Loading);
+    Utils.Log("[TechnicolorPersistence]: Done Loading", LogType.Loading);
+  }
 
-    }
+  public override void OnSave(ConfigNode node)
+  {
+    Utils.Log("[TechnicolorPersistence]: Started Saving", LogType.Loading);
+    base.OnSave(node);
+    ConfigNode swatchNode = new(TechnicolorConstants.PERSISTENCE_NODE);
+    TechnicolorEditorLogic.SwatchData.Save(swatchNode);
+    node.AddNode(swatchNode);
 
-    public override void OnSave(ConfigNode node)
-    {
-      Utils.Log("[TechnicolorPersistence]: Started Saving", LogType.Loading);
-      base.OnSave(node);
-      ConfigNode swatchNode = new(TechnicolorConstants.PERSISTENCE_NODE);
-      TechnicolorEditorLogic.SwatchData.Save(swatchNode);
-      node.AddNode(swatchNode);
-        
-      Utils.Log("[TechnicolorPersistence]: Finished Saving", LogType.Loading);
-    }
-
-    
+    Utils.Log("[TechnicolorPersistence]: Finished Saving", LogType.Loading);
   }
 }

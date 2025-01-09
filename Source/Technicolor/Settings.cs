@@ -1,67 +1,69 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Technicolor
+namespace Technicolor;
+
+/// <summary>
+///   Static class to hold settings and configuration
+/// </summary>
+public static class Settings
 {
+  /// Settings go here
+  public static bool DebugSettings = true;
+
+  public static bool DebugUI = true;
+  public static bool DebugLoading = true;
+  public static bool DebugEditor = true;
+
+  public static KeyCode PaintModeKey = KeyCode.Alpha6;
+  public static KeyCode SampleModeKey = KeyCode.Alpha7;
+  public static KeyCode FillModeKey = KeyCode.Alpha8;
+  public static KeyCode TogglePaletteKey = KeyCode.Alpha9;
+
+  public static int SwatchRenderResolution = 64;
+
+  public static string DefaultPrimarySwatch = "porkjetWhite";
+  public static string DefaultSecondarySwatch = "porkjetBlack";
+
+  private static bool _loadedOnce = false;
+
   /// <summary>
-  ///   Static class to hold settings and configuration
+  ///   Load data from configuration
   /// </summary>
-  public static class Settings
+  public static void Load()
   {
-    /// Settings go here
+    if (_loadedOnce)
+      return;
 
-    public static bool DebugSettings = true;
-    public static bool DebugUI = true;
-    public static bool DebugLoading = true;
-    public static bool DebugEditor = true;
+    _loadedOnce = true;
+    var settingsNode =
+      GameDatabase.Instance.GetConfigNode(TechnicolorConstants.SETTINGS_CONFIG_NODE);
 
-    public static KeyCode PaintModeKey  = KeyCode.Alpha6;
-    public static KeyCode SampleModeKey  = KeyCode.Alpha7;
-    public static KeyCode FillModeKey  = KeyCode.Alpha8;
-    public static KeyCode TogglePaletteKey  = KeyCode.Alpha9;
-
-    public static int SwatchRenderResolution = 64;
-
-    public static string DefaultPrimarySwatch = "porkjetWhite";
-    public static string DefaultSecondarySwatch = "porkjetBlack";
-
-    private static bool _loadedOnce = false;
-    /// <summary>
-    ///   Load data from configuration
-    /// </summary>
-    public static void Load()
+    Utils.Log("[Settings]: Started loading", LogType.Settings);
+    if (settingsNode != null)
     {
-      if (_loadedOnce) return;
+      Utils.Log("[Settings]: Using specified settings", LogType.Settings);
+      // Setting parsing goes here
 
-      _loadedOnce = true;
-      var settingsNode = GameDatabase.Instance.GetConfigNode(TechnicolorConstants.SETTINGS_CONFIG_NODE);
+      settingsNode.TryGetValue("DebugSettings", ref DebugSettings);
+      settingsNode.TryGetValue("DebugLoading", ref DebugLoading);
+      settingsNode.TryGetValue("DebugUI", ref DebugUI);
+      settingsNode.TryGetValue("DebugEditor", ref DebugEditor);
 
-      Utils.Log("[Settings]: Started loading", LogType.Settings);
-      if (settingsNode != null)
-      {
-        Utils.Log("[Settings]: Using specified settings", LogType.Settings);
-        // Setting parsing goes here
+      settingsNode.TryGetValue("DefaultPrimarySwatch", ref DefaultPrimarySwatch);
+      settingsNode.TryGetValue("DefaultSecondarySwatch", ref DefaultSecondarySwatch);
 
-        settingsNode.TryGetValue("DebugSettings", ref DebugSettings);
-        settingsNode.TryGetValue("DebugLoading", ref DebugLoading);
-        settingsNode.TryGetValue("DebugUI", ref DebugUI);
-        settingsNode.TryGetValue("DebugEditor", ref DebugEditor);
+      settingsNode.TryGetEnum<KeyCode>("PaintModeKey", ref PaintModeKey, KeyCode.Alpha5);
+      settingsNode.TryGetEnum<KeyCode>("SampleModeKey", ref SampleModeKey, KeyCode.Alpha5);
+      settingsNode.TryGetEnum<KeyCode>("FillModeKey", ref FillModeKey, KeyCode.Alpha5);
+      settingsNode.TryGetEnum<KeyCode>("TogglePaletteKey", ref TogglePaletteKey, KeyCode.Alpha5);
 
-        settingsNode.TryGetValue("DefaultPrimarySwatch", ref DefaultPrimarySwatch);
-        settingsNode.TryGetValue("DefaultSecondarySwatch", ref DefaultSecondarySwatch);
-
-        settingsNode.TryGetEnum<KeyCode>("PaintModeKey", ref PaintModeKey, KeyCode.Alpha5);
-        settingsNode.TryGetEnum<KeyCode>("SampleModeKey", ref SampleModeKey, KeyCode.Alpha5);
-        settingsNode.TryGetEnum<KeyCode>("FillModeKey", ref FillModeKey, KeyCode.Alpha5);
-        settingsNode.TryGetEnum<KeyCode>("TogglePaletteKey", ref TogglePaletteKey, KeyCode.Alpha5);
-
-        settingsNode.TryGetValue("SwatchRenderResolution", ref SwatchRenderResolution);
-      }
-      else
-      {
-        Utils.Log("[Settings]: Couldn't find settings file, using defaults", LogType.Settings);
-      }
-      Utils.Log("[Settings]: Finished loading", LogType.Settings);
+      settingsNode.TryGetValue("SwatchRenderResolution", ref SwatchRenderResolution);
     }
+    else
+    {
+      Utils.Log("[Settings]: Couldn't find settings file, using defaults", LogType.Settings);
+    }
+
+    Utils.Log("[Settings]: Finished loading", LogType.Settings);
   }
 }

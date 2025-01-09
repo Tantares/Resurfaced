@@ -1,8 +1,8 @@
 [*]
 charset = utf-8-bom
 end_of_line = crlf
-trim_trailing_whitespace = false
-insert_final_newline = false
+trim_trailing_whitespace = true
+insert_final_newline = true
 indent_style = space
 indent_size = 4
 
@@ -87,7 +87,7 @@ resharper_fsharp_max_infix_operator_expression = 500
 resharper_fsharp_max_record_width = 60
 resharper_fsharp_max_value_binding_width = 400
 resharper_indent_preprocessor_directives = normal
-resharper_int_align = true
+resharper_int_align = false
 resharper_keep_existing_declaration_parens_arrangement = false
 resharper_keep_existing_embedded_arrangement = false
 resharper_keep_existing_expr_member_arrangement = false

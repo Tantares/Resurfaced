@@ -1,64 +1,65 @@
-﻿using UnityEngine;
-using KSP.UI;
+﻿using KSP.UI;
 using KSP.UI.Screens;
+using UnityEngine;
 
-namespace Technicolor
+namespace Technicolor;
+
+public class TechnicolorEditorRollover : MonoBehaviour
 {
-  public class TechnicolorEditorRollover : MonoBehaviour
+  public bool Visible { get; private set; }
+  protected GameObject widget;
+  protected Transform widgetXform;
+  protected UIEditorRolloverPanel widgetPanel;
+  protected Part _prevPart;
+
+  protected void Start()
   {
-    public bool Visible { get; private set; }
-    protected GameObject widget;
-    protected Transform widgetXform;
-    protected UIEditorRolloverPanel widgetPanel;
-    protected Part _prevPart;
-    protected void Start()
-    {
-      Utils.Log("[TechnicolorEditorRollover]: Creating rollover panel", LogType.UI);
-      widget = (GameObject)Instantiate(TechnicolorAssets.EditorRolloverPrefab, Vector3.zero, Quaternion.identity);
-      widgetXform = widget.transform;
-      widgetXform.SetParent(UIMasterController.Instance.dialogCanvas.transform);
-      widgetXform.localScale = Vector3.one;
-      widgetPanel = widget.GetComponent<UIEditorRolloverPanel>();
+    Utils.Log("[TechnicolorEditorRollover]: Creating rollover panel", LogType.UI);
+    widget = (GameObject)Instantiate(TechnicolorAssets.EditorRolloverPrefab,
+                                     Vector3.zero,
+                                     Quaternion.identity);
+    widgetXform = widget.transform;
+    widgetXform.SetParent(UIMasterController.Instance.dialogCanvas.transform);
+    widgetXform.localScale = Vector3.one;
+    widgetPanel = widget.GetComponent<UIEditorRolloverPanel>();
+  }
 
+  protected void Update()
+  {
+    if (!(EditorLogic.fetch.constructionMode == (ConstructionMode)5
+       || EditorLogic.fetch.constructionMode == (ConstructionMode)6
+       || EditorLogic.fetch.constructionMode == (ConstructionMode)7)
+     || EditorLogic.RootPart == null
+     || EditorPanels.Instance.IsMouseOver())
+    {
+      SetVisibility(false);
+      return;
     }
-    protected void Update()
+
+    Part part = null;
+    if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var rayHit))
     {
-      if (!( EditorLogic.fetch.constructionMode == (ConstructionMode)5  || EditorLogic.fetch.constructionMode == (ConstructionMode)6  || EditorLogic.fetch.constructionMode == (ConstructionMode)7)
-        || EditorLogic.RootPart == null 
-        || (EditorPanels.Instance.IsMouseOver()))
-      {
-        SetVisibility(false);
-        return;
-      }
+      part = rayHit.transform.GetComponent<Part>();
+    }
 
-      Part part = null;
-      if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit rayHit))
+    if (part != null)
+    {
+      var module = part.GetComponent<ModuleTechnicolor>();
+      if (module != null)
       {
-        part = rayHit.transform.GetComponent<Part>();
-      }
+        SetVisibility(true);
 
-      if (part != null)
-      {
-        ModuleTechnicolor module = part.GetComponent<ModuleTechnicolor>();
-        if (module != null)
+        widgetXform.position = GetWindowPosition();
+        if (part != _prevPart)
         {
-          SetVisibility(true);
-
-          widgetXform.position = GetWindowPosition();
-          if (part != _prevPart)
+          string zones = "";
+          foreach (var zn in module.zones)
           {
-            string zones = "";
-            foreach (ColorZone zn in module.zones)
-            {
-              zones += $" • {TechnicolorData.ZoneLibrary.GetZoneDisplayName(zn.ZoneName)}\n";
-            }
-            widgetPanel.SetText(zones);
-            _prevPart = part;
+            zones += $" • {TechnicolorData.ZoneLibrary.GetZoneDisplayName(zn.ZoneName)}\n";
           }
-        }
-        else
-        {
-          SetVisibility(false);
+
+          widgetPanel.SetText(zones);
+          _prevPart = part;
         }
       }
       else
@@ -66,25 +67,30 @@ namespace Technicolor
         SetVisibility(false);
       }
     }
-    protected void SetVisibility(bool state)
+    else
     {
-      Visible = state;
-      //Utils.Log($"[TechnicolorEditorRollover]: setting vis from {widget.activeSelf} to {state}", LogType.UI);
-      if (widget.activeSelf != state)
-      {
-        widget.SetActive(state);
-      }
-    }
-    protected Vector2 GetWindowPosition()
-    {
-      Canvas canvas = UIMasterController.Instance.dialogCanvas;
-      RectTransformUtility.ScreenPointToLocalPointInRectangle(
-        canvas.transform as RectTransform,
-        Input.mousePosition, canvas.worldCamera,
-        out Vector2 position);
-
-      return canvas.transform.TransformPoint(position) + new Vector3(10f, -10f);
+      SetVisibility(false);
     }
   }
 
+  protected void SetVisibility(bool state)
+  {
+    Visible = state;
+    //Utils.Log($"[TechnicolorEditorRollover]: setting vis from {widget.activeSelf} to {state}", LogType.UI);
+    if (widget.activeSelf != state)
+    {
+      widget.SetActive(state);
+    }
+  }
+
+  protected Vector2 GetWindowPosition()
+  {
+    var canvas = UIMasterController.Instance.dialogCanvas;
+    RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform,
+                                                            Input.mousePosition,
+                                                            canvas.worldCamera,
+                                                            out var position);
+
+    return canvas.transform.TransformPoint(position) + new Vector3(10f, -10f);
+  }
 }

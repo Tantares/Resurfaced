@@ -1,46 +1,46 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Technicolor
+namespace Technicolor;
+
+public class DraggableWindow : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-  public class DraggableWindow : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+  public Transform target;
+  public bool shouldReturn;
+
+  private bool _isMouseDown = false;
+  private Vector3 _startMousePosition;
+  private Vector3 _startPosition;
+
+  public void OnPointerDown(PointerEventData dt)
   {
-    public Transform target;
-    public bool shouldReturn;
+    _isMouseDown = true;
+    _startPosition = target.position;
+    _startMousePosition = Input.mousePosition;
+  }
 
-    private bool _isMouseDown = false;
-    private Vector3 _startMousePosition;
-    private Vector3 _startPosition;
-    public void OnPointerDown(PointerEventData dt)
+  public void OnPointerUp(PointerEventData dt)
+  {
+    _isMouseDown = false;
+
+    if (shouldReturn)
     {
-      _isMouseDown = true;
-      _startPosition = target.position;
-      _startMousePosition = Input.mousePosition;
+      target.position = _startPosition;
     }
+  }
 
-    public void OnPointerUp(PointerEventData dt)
+  // Update is called once per frame
+  private void Update()
+  {
+    if (_isMouseDown)
     {
-      _isMouseDown = false;
+      var currentPosition = Input.mousePosition;
 
-      if (shouldReturn)
-      {
-        target.position = _startPosition;
-      }
-    }
+      var diff = currentPosition - _startMousePosition;
 
-    // Update is called once per frame
-    void Update()
-    {
-      if (_isMouseDown)
-      {
-        Vector3 currentPosition = Input.mousePosition;
+      var pos = _startPosition + diff;
 
-        Vector3 diff = currentPosition - _startMousePosition;
-
-        Vector3 pos = _startPosition + diff;
-
-        target.position = pos;
-      }
+      target.position = pos;
     }
   }
 }
