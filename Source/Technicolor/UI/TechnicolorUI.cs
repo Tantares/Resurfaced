@@ -23,7 +23,7 @@ namespace Technicolor
       Utils.Log("[TechnicolorUI]: Start", LogType.UI);
 
       CreateWindow();
-      foreach (TechnicolorSwatch s in TechnicolorData.Instance.SwatchLibrary.Swatches)
+      foreach (TechnicolorSwatch s in TechnicolorData.SwatchLibrary.Swatches)
       {
         s.GenerateThumbnail();
       }

@@ -8,7 +8,7 @@ namespace Technicolor
   public class UILibrarySwatchGroup: MonoBehaviour
   {
     public bool SwatchesShown { get; private set; }
-    public string GroupName => _displayText;
+    public TechnicolorSwatchGroup Group => _group;
     [SerializeField]
     protected Button _headerButton;
     [SerializeField]
@@ -18,7 +18,7 @@ namespace Technicolor
     [SerializeField]
     protected Transform _swatchParent;
 
-    protected string _displayText;
+    protected TechnicolorSwatchGroup _group;
     protected List<UILibrarySwatch> _swatchIcons;
 
     public void Awake()
@@ -35,22 +35,22 @@ namespace Technicolor
       _swatches = _swatchParent.gameObject;
     }
 
-    public void SetGroup(string name)
+    public void SetGroup(TechnicolorSwatchGroup group)
     {
-      _displayText = name;
+      _group = group;
       SwatchesShown = true;
-      _headerText.text = $"▶ {_displayText}";
+      _headerText.text = $"▶ {_group.DisplayName}";
 
-      CreateGroupSwatches(name);
+      CreateGroupSwatches();
     }
-    public void CreateGroupSwatches(string name)
+    public void CreateGroupSwatches()
     {
       _swatchIcons = new();
 
 
-      foreach (TechnicolorSwatch swatch in TechnicolorData.Instance.SwatchLibrary.Swatches)
+      foreach (TechnicolorSwatch swatch in TechnicolorData.SwatchLibrary.Swatches)
       {
-        if (swatch.Group == name)
+        if (swatch.Group == Group.Name)
         {
           GameObject newSwatchIcon = Instantiate(TechnicolorAssets.SwatchLibraryButtonPrefab);
           newSwatchIcon.transform.SetParent(_swatchParent, false);
@@ -67,11 +67,11 @@ namespace Technicolor
       SwatchesShown = state;
       if (SwatchesShown)
       {
-        _headerText.text = $"▼ {_displayText}";
+        _headerText.text = $"▼ {_group.DisplayName}";
       }
       else
       {
-        _headerText.text = $"▶ {_displayText}";
+        _headerText.text = $"▶ {_group.DisplayName}";
       }
       _swatches.SetActive(SwatchesShown);
     }

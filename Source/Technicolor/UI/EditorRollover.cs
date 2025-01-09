@@ -13,7 +13,7 @@ namespace Technicolor
     protected Part _prevPart;
     protected void Start()
     {
-      Utils.Log("[TechnicolorEditorRollover]: Creating panel", LogType.UI);
+      Utils.Log("[TechnicolorEditorRollover]: Creating rollover panel", LogType.UI);
       widget = (GameObject)Instantiate(TechnicolorAssets.EditorRolloverPrefab, Vector3.zero, Quaternion.identity);
       widgetXform = widget.transform;
       widgetXform.SetParent(UIMasterController.Instance.dialogCanvas.transform);
@@ -50,7 +50,7 @@ namespace Technicolor
             string zones = "";
             foreach (ColorZone zn in module.zones)
             {
-              zones += $" • {zn.ZoneName}\n";
+              zones += $" • {TechnicolorData.ZoneLibrary.GetZoneDisplayName(zn.ZoneName)}\n";
             }
             widgetPanel.SetText(zones);
             _prevPart = part;

@@ -13,6 +13,7 @@ namespace Technicolor
     public static bool DebugSettings = true;
     public static bool DebugUI = true;
     public static bool DebugLoading = true;
+    public static bool DebugEditor = true;
 
     public static KeyCode PaintModeKey  = KeyCode.Alpha6;
     public static KeyCode SampleModeKey  = KeyCode.Alpha7;
@@ -43,7 +44,8 @@ namespace Technicolor
 
         settingsNode.TryGetValue("DebugSettings", ref DebugSettings);
         settingsNode.TryGetValue("DebugLoading", ref DebugLoading);
-        settingsNode.TryGetValue("DebugUIMode", ref DebugUI);
+        settingsNode.TryGetValue("DebugUI", ref DebugUI);
+        settingsNode.TryGetValue("DebugEditor", ref DebugEditor);
 
         settingsNode.TryGetValue("DefaultPrimarySwatch", ref DefaultPrimarySwatch);
         settingsNode.TryGetValue("DefaultSecondarySwatch", ref DefaultSecondarySwatch);

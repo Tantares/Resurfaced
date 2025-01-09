@@ -50,7 +50,6 @@ namespace Technicolor
       _swatch = librarySwatch;
       _tooltip.prefab = UIUtils.FindTextTooltipPrefab();
       _tooltip.textString = Swatch.DisplayName;
-      //TechnicolorData.Instance.SwatchLibrary.GenerateThumbnails();
       GenerateSwatchVisual();
     }
 
@@ -58,7 +57,6 @@ namespace Technicolor
     {
       _swatch.GenerateThumbnail();
       _image.sprite = Swatch.Thumbnail;
-      //image.color = Swatch.Color;
     }
   }
 

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using KSP.Localization;
 
 namespace Technicolor
 {
@@ -6,7 +7,7 @@ namespace Technicolor
   public class TechnicolorSwatch
   {
     public string Name => _name;
-    public string DisplayName => _DisplayName;
+    public string DisplayName => _displayName;
     public string Group => _group;
     public Color Color => _Color;
     public float Metalness => _Metalness;
@@ -21,7 +22,7 @@ namespace Technicolor
     private Texture2D texture;
 
     private string _name;
-    private string _DisplayName;
+    private string _displayName;
     private string _group;
     private Color _Color;
     private float _Metalness;
@@ -42,7 +43,7 @@ namespace Technicolor
     {
       _name = "default";
       _group = "internal";
-      _DisplayName = "Default";
+      _displayName = "Default";
       _Color = Color.white;
       _Metalness = 0f;
       _Smoothness = 0.2f;
@@ -58,28 +59,24 @@ namespace Technicolor
     {
       node.TryGetValue(NODE_NAME, ref _name);
       node.TryGetValue(NODE_GROUP, ref _group);
-      node.TryGetValue(NODE_DISPLAYNAME, ref _DisplayName);
+      node.TryGetValue(NODE_DISPLAYNAME, ref _displayName);
       node.TryGetValue(NODE_COLOR, ref _Color);
       node.TryGetValue(NODE_METALNESS, ref _Metalness);
       node.TryGetValue(NODE_SMOOTHNESS, ref _Smoothness);
       node.TryGetValue(NODE_METALBLEND, ref _MetalBlend);
       node.TryGetValue(NODE_SMOOTHBLEND, ref _SmoothBlend);
-    }
-    public void Save(ConfigNode parent)
-    {
-      ConfigNode node = new ConfigNode();
-      parent.AddNode(node);
+
+      _displayName = Localizer.Format(_displayName);
     }
     public void GenerateThumbnail()
     {
-
       if (!Thumbnail)
       {
         Utils.Log($"[TechnicolorSwatch] Rendering swatch thumbnails for {_name}", LogType.UI);
 
         Material sky = TechnicolorAssets.SwatchRenderSkybox;
         sky.SetTexture("_Tex", TechnicolorAssets.SwatchRenderTexture);
-
+        sky.SetColor("_Tint", new Color(0.3f,0.3f,0.3f));
         UnityEngine.Object.Destroy(texture);
 
         texture = SwatchRenderUtility.RenderSwatchThumbnail(TechnicolorAssets.SwatchRenderMultiPrefab, Settings.SwatchRenderResolution, sky, this);
@@ -88,7 +85,6 @@ namespace Technicolor
         Thumbnail = Sprite.Create(texture, new Rect(Settings.SwatchRenderResolution * 2, 0.0f, Settings.SwatchRenderResolution, texture.height), new Vector2(0.5f, 0.5f));
         return;
       }
-      //Utils.Log($"[TechnicolorSwatch] Skipping render for {_name}", LogType.UI);
     }
   }
 }

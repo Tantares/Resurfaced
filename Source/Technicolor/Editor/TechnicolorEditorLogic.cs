@@ -24,13 +24,13 @@ namespace Technicolor
 
     public static void GetSwatchesFromPart(ModuleTechnicolor module)
     {
-      Utils.Log($"[TechnicolorEditorLogic] Getting swatches from part");
+      Utils.Log($"[TechnicolorEditorLogic] Getting swatches from part", LogType.Editor);
       module.GetPartSwatches(ref SwatchData);
       TechnicolorUI.Instance.MaterialWindow.SetUISwatches();
     }
     public static void PaintPart(ModuleTechnicolor module)
     {
-      Utils.Log($"[TechnicolorEditorLogic] Painting part");
+      Utils.Log($"[TechnicolorEditorLogic] Painting part", LogType.Editor);
       module.SetPartSwatches(SwatchData);
     }
 
@@ -46,8 +46,8 @@ namespace Technicolor
         ModuleTechnicolor module = part.GetComponent<ModuleTechnicolor>();
         if (module != null)
         {
-          module.ApplySwatches();
-          Utils.Log($"[TechnicolorEditorLogic] Painting part");
+          //module.ApplySwatches();
+          Utils.Log($"[TechnicolorEditorLogic] Painting part", LogType.Editor);
         }
       }
     }

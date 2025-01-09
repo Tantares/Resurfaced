@@ -7,8 +7,7 @@ namespace Technicolor
   public class SwatchLibrary
   {
     public List<TechnicolorSwatch> Swatches;
-    public List<String> SwatchGroups;
-
+    public List<TechnicolorSwatchGroup> SwatchGroups;
     public TechnicolorSwatch DefaultSwatch;
 
     public SwatchLibrary() { }
@@ -25,7 +24,7 @@ namespace Technicolor
         return sw;
       }
       Utils.Log($"[SwatchLibrary] swatch {name} could not be found", LogType.Any);
-      return null;
+      return DefaultSwatch;
     }
 
     public void Load()
@@ -45,7 +44,7 @@ namespace Technicolor
           }
           catch
           {
-            Utils.LogError($"[SwatchLibrary] Issue loading preset from node: {subNode}");
+            Utils.LogError($"[SwatchLibrary] Issue swatch preset from node: {subNode}");
           }
         }
       }
@@ -54,11 +53,18 @@ namespace Technicolor
       Swatches.Sort(comparer);
 
       Utils.Log($"[SwatchLibrary] Loaded {Swatches.Count} Swatches", LogType.Loading);
-      foreach (TechnicolorSwatch swatch in Swatches)
+      foreach (var node in GameDatabase.Instance.GetConfigNodes(TechnicolorConstants.GROUP_LIBRARY_CONFIG_NODE))
       {
-        if (!SwatchGroups.Contains(swatch.Group) && swatch.Group != "" && swatch.Group != "internal")
+        foreach (var subNode in node.GetNodes(TechnicolorConstants.GROUP_CONFIG_NODE))
         {
-          SwatchGroups.Add(swatch.Group);
+          try
+          {
+            SwatchGroups.Add(new(subNode));
+          }
+          catch
+          {
+            Utils.LogError($"[SwatchLibrary] Issue loading group from node: {subNode}");
+          }
         }
       }
       Utils.Log($"[SwatchLibrary] Loaded {SwatchGroups.Count} Swatch Groups", LogType.Loading);

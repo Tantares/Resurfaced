@@ -9,6 +9,7 @@ namespace Technicolor
     UI,
     Settings,
     Loading,
+    Editor,
     Any
   }
 
@@ -35,7 +36,8 @@ namespace Technicolor
       return logType == LogType.Any
               || (logType == LogType.Settings && Settings.DebugSettings)
               || (logType == LogType.UI && Settings.DebugUI)
-              || (logType == LogType.Loading && Settings.DebugLoading);
+              || (logType == LogType.Loading && Settings.DebugLoading)
+              || (logType == LogType.Editor && Settings.DebugEditor);
     }
 
     /// <summary>

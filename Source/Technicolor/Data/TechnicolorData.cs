@@ -8,9 +8,8 @@ namespace Technicolor
   [KSPAddon(KSPAddon.Startup.Instantly, true)]
   public class TechnicolorData : MonoBehaviour
   {
-    public        bool          FirstLoad = true;
-    public SwatchLibrary SwatchLibrary;
-    public ZoneLibrary ZoneLibrary;
+    public static SwatchLibrary SwatchLibrary;
+    public static ZoneLibrary ZoneLibrary;
     public static TechnicolorData Instance { get; private set; }
     
     protected void Awake()
@@ -22,11 +21,11 @@ namespace Technicolor
     public static void ModuleManagerPostLoad()
     {
       Settings.Load();
-      Instance.SwatchLibrary = new();
-      Instance.SwatchLibrary.Load();
+      SwatchLibrary = new();
+      SwatchLibrary.Load();
 
-      Instance.ZoneLibrary = new();
-      Instance.ZoneLibrary.Load();
+      ZoneLibrary = new();
+      ZoneLibrary.Load();
     }
 
     //public Texture2D lalaLand;

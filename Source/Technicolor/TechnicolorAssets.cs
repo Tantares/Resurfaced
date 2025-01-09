@@ -69,10 +69,6 @@ namespace Technicolor
       SwatchRenderSkybox = prefabs.LoadAsset("technicolor-swatch-skybox") as Material;
       SwatchRenderTexture = prefabs.LoadAsset("VAB_lr") as Texture2D;
 
-      //SwatchRenderSkybox.SetTexture("_Tex", cubemap);
-
-      //Debug.Log(SwatchRenderSkybox.mainTexture);
-
       /// Get the Sprite Atlas
       Sprite[] spriteSheet = prefabs.LoadAssetWithSubAssets<Sprite>(SPRITE_ATLAS_NAME);
       Sprites = new Dictionary<string, Sprite>();

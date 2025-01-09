@@ -85,13 +85,13 @@ namespace Technicolor
       _zoneDropdown.onValueChanged.AddListener(delegate { OnAddZone(); });
       /// set up the library panel
       _swatchLibraryGroups = new();
-      foreach (string groupName in TechnicolorData.Instance.SwatchLibrary.SwatchGroups)
+      foreach (TechnicolorSwatchGroup group in TechnicolorData.SwatchLibrary.SwatchGroups)
       {
         GameObject newGO = Instantiate(TechnicolorAssets.SwatchLibraryGroupPrefab);
         newGO.transform.SetParent(_libraryAreaBase, false);
 
         UILibrarySwatchGroup newGroup = newGO.GetComponent<UILibrarySwatchGroup>();
-        newGroup.SetGroup(groupName);
+        newGroup.SetGroup(group);
         _swatchLibraryGroups.Add(newGroup);
       }
       SetLibraryVisible(false);
@@ -177,6 +177,7 @@ namespace Technicolor
       foreach (var group in _swatchLibraryGroups)
       {
         group.gameObject.SetActive(false);
+
         if (_currentSlotType == SwatchSlot.Primary)
           group.HighlightSwatch(zoneData.PrimarySwatch);
         else
@@ -188,7 +189,7 @@ namespace Technicolor
     protected void FilterLibraryGroups(TechnicolorPersistentZoneData zoneData)
     {
 
-      List<string> validGroups = TechnicolorData.Instance.ZoneLibrary.GetValidGroupsForZone(zoneData.ZoneName).ToList();
+      List<string> validGroups = TechnicolorData.ZoneLibrary.GetValidGroupsForZone(zoneData.ZoneName).ToList();
       foreach (var group in _swatchLibraryGroups)
       {
         if (!zoneData.RestrictToMaterialGroups)
@@ -197,7 +198,7 @@ namespace Technicolor
         }
         else
         {
-          if (validGroups.Contains(group.GroupName))
+          if (validGroups.Contains(group.Group.Name))
           {
             group.gameObject.SetActive(true);
           }
@@ -217,6 +218,7 @@ namespace Technicolor
           widget.OnSelectSwatch(newSwatch, _currentSlotType);
         }
       }
+      
       foreach (var zoneData in TechnicolorEditorLogic.SwatchData.Zones)
       {
         if (_currentZone == zoneData.ZoneName)
@@ -227,6 +229,11 @@ namespace Technicolor
             zoneData.SecondarySwatch = newSwatch;
         }
       }
+      foreach (var group in _swatchLibraryGroups)
+      {
+          group.HighlightSwatch(newSwatch);
+      }
+
     }
 
     public void SetUISwatches()

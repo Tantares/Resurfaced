@@ -6,7 +6,6 @@ namespace Technicolor
   {
     public static TechnicolorPersistence Instance { get; private set; }
 
-
     public override void OnAwake()
     {
      
@@ -19,7 +18,7 @@ namespace Technicolor
     {
       Utils.Log("[TechnicolorPersistence]: Started Loading", LogType.Loading);
       base.OnLoad(node);
-      ConfigNode swatchData = node.GetNode(TechnicolorConstants.SWATCH_PERSISTENCE_NODE);
+      ConfigNode swatchData = node.GetNode(TechnicolorConstants.PERSISTENCE_NODE);
       if (swatchData != null && TechnicolorEditorLogic.SwatchData != null)
       {
         TechnicolorEditorLogic.SwatchData.Load(swatchData);
@@ -32,7 +31,7 @@ namespace Technicolor
     {
       Utils.Log("[TechnicolorPersistence]: Started Saving", LogType.Loading);
       base.OnSave(node);
-      ConfigNode swatchNode = new(TechnicolorConstants.SWATCH_PERSISTENCE_NODE);
+      ConfigNode swatchNode = new(TechnicolorConstants.PERSISTENCE_NODE);
       TechnicolorEditorLogic.SwatchData.Save(swatchNode);
       node.AddNode(swatchNode);
         

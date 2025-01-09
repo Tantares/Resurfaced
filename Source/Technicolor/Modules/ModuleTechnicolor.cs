@@ -21,7 +21,7 @@ namespace Technicolor
           if (FirstPlaced)
           {
 
-            Utils.Log($"[ModuleTechnicolor] Collecting initial info from object", LogType.Any);
+            Utils.Log($"[ModuleTechnicolor] Collecting initial info from object", LogType.Loading);
             // Copy out of the scriptable object
             ColorZone[] copyTarget = new ColorZone[zones.Length];
             for (int i = 0; i < copyTarget.Length; i++)
@@ -48,7 +48,6 @@ namespace Technicolor
             }
             else
             {
-              //zones[i].Initialize(part);
             }
           }
           FirstPlaced = false;
@@ -105,14 +104,14 @@ namespace Technicolor
 
     public void SetSwatchesForSlot(TechnicolorPersistentZoneData slotData)
     {
-      Utils.Log($"[ModuleTechnicolor] Applying swatches for zone {slotData.ZoneName} To part", LogType.Any);
+      Utils.Log($"[ModuleTechnicolor] Applying swatches for zone {slotData.ZoneName} To part", LogType.Editor);
 
       for (int i = 0; i < zones.Length; i++)
       {
         if (zones[i].ZoneName == slotData.ZoneName)
         {
           zones[i].SetSwatch(slotData.PrimarySwatch, slotData.SecondarySwatch);
-          zones[i].Apply();
+          //zones[i].Apply();
         }
       }
     }
@@ -130,7 +129,7 @@ namespace Technicolor
           if (zones[i].ZoneName == zoneData.ZoneName)
           {
 
-            Utils.Log($"[ModuleTechnicolor] Sampling {zones[i].PrimarySwatch.Name} and {zones[i].SecondarySwatch.Name} from {zones[i].ZoneName}", LogType.Any);
+            Utils.Log($"[ModuleTechnicolor] Sampling {zones[i].PrimarySwatch.Name} and {zones[i].SecondarySwatch.Name} from {zones[i].ZoneName}", LogType.Editor);
             zoneData.ActiveInEditor = true;
             zoneData.PrimarySwatch = zones[i].PrimarySwatch ?? zoneData.PrimarySwatch;
             zoneData.SecondarySwatch = zones[i].SecondarySwatch ?? zoneData.SecondarySwatch;
@@ -147,5 +146,32 @@ namespace Technicolor
           zones[i].Apply();
         }
     }
+
+    public void LateUpdate()
+    {
+      RefreshMPB();
+    }
+    private MaterialPropertyBlock? mpb;
+    private MaterialUtils.PartMPBProperties partMPBProps = new();
+
+    protected void RefreshMPB()
+    {
+      if (mpb == null) mpb = new MaterialPropertyBlock();
+
+      mpb.Clear();
+      part.ExtractMPBProperties(ref partMPBProps);
+      partMPBProps.WriteTo(ref mpb);
+
+      if (zones != null)
+      {
+        for (int i = 0; i < zones.Length; i++)
+        {
+          zones[i].Apply(mpb);
+        }
+      }
+
+    }
+
+
   }
 }

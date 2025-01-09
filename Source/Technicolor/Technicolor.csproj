@@ -52,6 +52,9 @@
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="Data\EditorColorZone.cs" />
+    <Compile Include="Data\TechnicolorSwatchGroup.cs" />
+    <Compile Include="Persistence\TechnicolorPersistentZoneData.cs" />
     <Compile Include="UI\EditorRollover.cs" />
     <Compile Include="Editor\TechnicolorEditorModes.cs" />
     <Compile Include="Editor\TechnicolorSwatchData.cs" />
@@ -63,12 +66,12 @@
     <Compile Include="SkyCapture.cs" />
     <Compile Include="UI\UIEditorRolloverPanel.cs" />
     <Compile Include="UI\UISwatchZoneWidget.cs" />
-    <Compile Include="ZoneLibrary.cs" />
-    <Compile Include="SwatchLibrary.cs" />
+    <Compile Include="Data\ZoneLibrary.cs" />
+    <Compile Include="Data\SwatchLibrary.cs" />
     <Compile Include="SwatchRenderUtility.cs" />
     <Compile Include="TechnicolorAssets.cs" />
-    <Compile Include="TechnicolorPersistence.cs" />
-    <Compile Include="TechnicolorSwatch.cs" />
+    <Compile Include="Persistence\TechnicolorPersistence.cs" />
+    <Compile Include="Data\TechnicolorSwatch.cs" />
     <Compile Include="UIUtils.cs" />
     <Compile Include="UI\DraggableWindow.cs" />
     <Compile Include="Editor\TechnicolorEditorLogic.cs" />
@@ -79,7 +82,7 @@
     <Compile Include="UI\UILibrarySwatch.cs" />
     <Compile Include="UI\UILibrarySwatchGroup.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="TechnicolorData.cs" />
+    <Compile Include="Data\TechnicolorData.cs" />
     <Compile Include="TechnicolorConstants.cs" />
   </ItemGroup>
   <ItemGroup>
