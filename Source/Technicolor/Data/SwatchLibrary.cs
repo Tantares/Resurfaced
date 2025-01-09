@@ -3,40 +3,45 @@ using UnityEngine;
 
 namespace Technicolor;
 
-public class SwatchLibrary
+public static class SwatchLibrary
 {
-  public List<TechnicolorSwatch> Swatches;
-  public List<TechnicolorSwatchGroup> SwatchGroups;
-  public TechnicolorSwatch DefaultSwatch;
+  public static readonly TechnicolorSwatch DefaultSwatch = new();
+  public static readonly List<TechnicolorSwatch> Swatches = [DefaultSwatch];
+  public static readonly Dictionary<string, TechnicolorSwatchGroup> SwatchGroups = new();
 
-  public SwatchLibrary() { }
+  private static readonly Dictionary<string, TechnicolorSwatch> _swatchNameCache = new();
 
-  public bool HasSwatch(string name)
+  public static bool HasSwatch(string name)
   {
-    return Swatches.Find(x => x.Name == name) != null;
+    if (_swatchNameCache.ContainsKey(name))
+    {
+      return true;
+    }
+
+    if (Swatches.Find(s => s.Name == name) is TechnicolorSwatch sw)
+    {
+      _swatchNameCache.Add(name, sw);
+      return true;
+    }
+
+    return false;
   }
 
-  public TechnicolorSwatch GetSwatch(string name)
+  public static TechnicolorSwatch GetSwatch(string name)
   {
-    var sw = Swatches.Find(x => x.Name == name);
-    if (sw != null)
+    if (HasSwatch(name))
     {
-      return sw;
+      return _swatchNameCache[name];
     }
 
     Utils.Log($"[SwatchLibrary] swatch {name} could not be found", LogType.Any);
     return DefaultSwatch;
   }
 
-  public void Load()
+  public static void Load()
   {
-    Swatches = new();
-    SwatchGroups = new();
-    DefaultSwatch = new();
-    Swatches.Add(DefaultSwatch);
     Utils.Log($"[SwatchLibrary] Loading Swatches", LogType.Loading);
-    foreach (var node in GameDatabase.Instance.GetConfigNodes(
-               TechnicolorConstants.SWATCH_LIBRARY_CONFIG_NODE))
+    foreach (var node in GameDatabase.Instance.GetConfigNodes(TechnicolorConstants.SWATCH_LIBRARY_CONFIG_NODE))
     {
       foreach (var subNode in node.GetNodes(TechnicolorConstants.SWATCH_CONFIG_NODE))
       {
@@ -55,14 +60,14 @@ public class SwatchLibrary
     Swatches.Sort(comparer);
 
     Utils.Log($"[SwatchLibrary] Loaded {Swatches.Count} Swatches", LogType.Loading);
-    foreach (var node in GameDatabase.Instance.GetConfigNodes(
-               TechnicolorConstants.GROUP_LIBRARY_CONFIG_NODE))
+    foreach (var node in GameDatabase.Instance.GetConfigNodes(TechnicolorConstants.GROUP_LIBRARY_CONFIG_NODE))
     {
       foreach (var subNode in node.GetNodes(TechnicolorConstants.GROUP_CONFIG_NODE))
       {
         try
         {
-          SwatchGroups.Add(new(subNode));
+          TechnicolorSwatchGroup sg = new(subNode);
+          SwatchGroups.Add(sg.Name, sg);
         }
         catch
         {
@@ -78,17 +83,17 @@ public class SwatchLibrary
   {
     public int Compare(TechnicolorSwatch x, TechnicolorSwatch y)
     {
-      Color.RGBToHSV(x.Color, out float h1, out float s1, out float v1);
-      Color.RGBToHSV(y.Color, out float h2, out float s2, out float v2);
-      int compareSmooth = x.Smoothness.CompareTo(y.Smoothness);
+      Color.RGBToHSV(x.Color, out float h1, out float _, out float _);
+      Color.RGBToHSV(y.Color, out float h2, out float _, out float _);
 
-      if (compareSmooth == 0)
+      int compareSmooth = x.Smoothness.CompareTo(y.Smoothness);
+      if (compareSmooth != 0)
       {
-        int compareHue = h1.CompareTo(h2);
-        return compareHue;
+        return compareSmooth;
       }
 
-      return compareSmooth;
+      int compareHue = h1.CompareTo(h2);
+      return compareHue;
     }
   }
 }

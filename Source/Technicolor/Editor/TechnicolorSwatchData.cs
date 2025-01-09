@@ -9,7 +9,7 @@ public class TechnicolorSwatchData
   public TechnicolorSwatchData()
   {
     Zones = new();
-    foreach (var zone in TechnicolorData.ZoneLibrary.EditorColorZones)
+    foreach (var zone in ZoneLibrary.EditorColorZones.Values)
     {
       Zones.Add(new(zone));
     }

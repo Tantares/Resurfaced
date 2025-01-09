@@ -48,8 +48,8 @@ public class ColorZone : ScriptableObject
   {
     _part = p;
     CollectMaterials();
-    _primarySwatch = TechnicolorData.SwatchLibrary.GetSwatch(PrimarySwatchName);
-    _secondarySwatch = TechnicolorData.SwatchLibrary.GetSwatch(SecondarySwatchName);
+    _primarySwatch = SwatchLibrary.GetSwatch(PrimarySwatchName);
+    _secondarySwatch = SwatchLibrary.GetSwatch(SecondarySwatchName);
     //Apply();
   }
 
@@ -104,8 +104,8 @@ public class ColorZone : ScriptableObject
     PrimarySwatchName = primaryName;
     SecondarySwatchName = secondaryName;
 
-    _primarySwatch = TechnicolorData.SwatchLibrary.GetSwatch(primaryName);
-    _secondarySwatch = TechnicolorData.SwatchLibrary.GetSwatch(secondaryName);
+    _primarySwatch = SwatchLibrary.GetSwatch(primaryName);
+    _secondarySwatch = SwatchLibrary.GetSwatch(secondaryName);
   }
 
   public void SetSwatch(TechnicolorSwatch primary, TechnicolorSwatch secondary)

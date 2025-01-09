@@ -65,12 +65,12 @@ public class TechnicolorPersistentZoneData
 
     if (priSwatchName != "")
     {
-      PrimarySwatch = TechnicolorData.SwatchLibrary.GetSwatch(priSwatchName);
+      PrimarySwatch = SwatchLibrary.GetSwatch(priSwatchName);
     }
 
     if (secSwatchName != "")
     {
-      SecondarySwatch = TechnicolorData.SwatchLibrary.GetSwatch(secSwatchName);
+      SecondarySwatch = SwatchLibrary.GetSwatch(secSwatchName);
     }
 
     if (ZoneName == "main")

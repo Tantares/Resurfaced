@@ -26,6 +26,9 @@ public static class TechnicolorConstants
 
 public static class ShaderPropertyID
 {
+  public static readonly int _Tex = Shader.PropertyToID("_Tex");
+  public static readonly int _Tint = Shader.PropertyToID("_Tint");
+
   public static readonly int _TC1Color = Shader.PropertyToID(nameof(_TC1Color));
   public static readonly int _TC1Metalness = Shader.PropertyToID(nameof(_TC1Metalness));
   public static readonly int _TC1Smoothness = Shader.PropertyToID(nameof(_TC1Smoothness));

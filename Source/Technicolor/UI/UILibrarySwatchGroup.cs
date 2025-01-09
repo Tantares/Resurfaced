@@ -43,7 +43,7 @@ public class UILibrarySwatchGroup : MonoBehaviour
   {
     _swatchIcons = new();
 
-    foreach (var swatch in TechnicolorData.SwatchLibrary.Swatches)
+    foreach (var swatch in SwatchLibrary.Swatches)
     {
       if (swatch.Group == Group.Name)
       {

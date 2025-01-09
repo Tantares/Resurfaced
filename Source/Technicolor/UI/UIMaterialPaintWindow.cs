@@ -86,7 +86,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
     _zoneDropdown.onValueChanged.AddListener(delegate { OnAddZone(); });
     /// set up the library panel
     _swatchLibraryGroups = new();
-    foreach (var group in TechnicolorData.SwatchLibrary.SwatchGroups)
+    foreach (var group in SwatchLibrary.SwatchGroups.Values)
     {
       var newGO = Instantiate(TechnicolorAssets.SwatchLibraryGroupPrefab);
       newGO.transform.SetParent(_libraryAreaBase, false);
@@ -195,8 +195,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
 
   protected void FilterLibraryGroups(TechnicolorPersistentZoneData zoneData)
   {
-    var validGroups = TechnicolorData.ZoneLibrary.GetValidGroupsForZone(zoneData.ZoneName)
-      .ToList();
+    var validGroups = ZoneLibrary.GetValidGroupsForZone(zoneData.ZoneName).ToList();
     foreach (var group in _swatchLibraryGroups)
     {
       if (!zoneData.RestrictToMaterialGroups)

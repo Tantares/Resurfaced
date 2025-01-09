@@ -23,7 +23,7 @@ public class TechnicolorUI : MonoBehaviour
     Utils.Log("[TechnicolorUI]: Start", LogType.UI);
 
     CreateWindow();
-    foreach (var s in TechnicolorData.SwatchLibrary.Swatches)
+    foreach (var s in SwatchLibrary.Swatches)
     {
       s.GenerateThumbnail();
     }

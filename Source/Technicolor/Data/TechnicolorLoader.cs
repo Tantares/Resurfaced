@@ -6,25 +6,12 @@ namespace Technicolor;
 ///   Class to load shaders and config level data for the mod.
 /// </summary>
 [KSPAddon(KSPAddon.Startup.Instantly, true)]
-public class TechnicolorData : MonoBehaviour
+public class TechnicolorLoader : MonoBehaviour
 {
-  public static SwatchLibrary SwatchLibrary;
-  public static ZoneLibrary ZoneLibrary;
-  public static TechnicolorData Instance { get; private set; }
-
-  protected void Awake()
-  {
-    Instance = this;
-    DontDestroyOnLoad(gameObject);
-  }
-
   public static void ModuleManagerPostLoad()
   {
     Settings.Load();
-    SwatchLibrary = new();
     SwatchLibrary.Load();
-
-    ZoneLibrary = new();
     ZoneLibrary.Load();
   }
 

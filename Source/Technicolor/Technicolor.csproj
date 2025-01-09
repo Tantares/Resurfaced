@@ -82,8 +82,8 @@
         <Compile Include="UI\UILibrarySwatch.cs"/>
         <Compile Include="UI\UILibrarySwatchGroup.cs"/>
         <Compile Include="Utils.cs"/>
-        <Compile Include="Data\TechnicolorData.cs"/>
-        <Compile Include="TechnicolorConstants.cs"/>
+        <Compile Include="Data\TechnicolorLoader.cs" />
+        <Compile Include="TechnicolorConstants.cs" />
     </ItemGroup>
     <ItemGroup>
         <Publicize Include="Assembly-CSharp" IncludeCompilerGeneratedMembers="false"/>
