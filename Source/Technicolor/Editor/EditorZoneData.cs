@@ -2,80 +2,50 @@
 
 public class EditorZoneData
 {
-  public string ZoneName = "main";
-  public string DisplayName = "Main";
-  public Swatch PrimarySwatch;
-  public Swatch SecondarySwatch;
+  [Persistent] public readonly string Name;
 
-  public bool RestrictToMaterialGroups = true;
-  public bool AutoApply = false;
-  public bool ActiveInEditor = false;
-  public bool AlwaysActive = false;
+  public EditorColorZone EditorZone => ZoneLibrary.EditorColorZones[Name];
 
-  private const string NODE_NAME = "SmoothBlend";
-  private const string NODE_PRIMARY = "PrimarySwatch";
-  private const string NODE_SECONDARY = "SecondarySwatch";
-  private const string NODE_ALWAYSACTIVE = "AlwaysActive";
-  private const string NODE_RESTRICT_SWATCHES = "RestrictToMaterialGroups";
-  private const string NODE_APPLY_AUTOMATICALLY = "ApplyAutomatically";
+  public string DisplayName => EditorZone.DisplayName;
+  public bool AlwaysActive => EditorZone.AlwaysActive;
+
+  [Persistent(name = "PrimarySwatch")] private string _primarySwatchName;
+  [Persistent(name = "SecondarySwatch")] private string _secondarySwatchName;
+
+  public Swatch PrimarySwatch
+  {
+    get => SwatchLibrary.GetSwatch(_primarySwatchName);
+    set => _primarySwatchName = value.Name;
+  }
+
+  public Swatch SecondarySwatch
+  {
+    get => SwatchLibrary.GetSwatch(_secondarySwatchName);
+    set => _secondarySwatchName = value.Name;
+  }
+
+  [Persistent] public bool RestrictToMaterialGroups = true;
+  [Persistent] public bool AutoApply = false;
+  [Persistent] public bool ActiveInEditor = false;
 
   public EditorZoneData(EditorColorZone edZone)
   {
-    ZoneName = edZone.Name;
-    DisplayName = edZone.DisplayName;
-    PrimarySwatch = edZone.DefaultPrimarySwatch;
-    SecondarySwatch = edZone.DefaultSecondarySwatch;
-    AlwaysActive = edZone.AlwaysActive;
-
+    Name = edZone.Name;
+    _primarySwatchName = edZone.DefaultPrimarySwatch;
+    _secondarySwatchName = edZone.DefaultSecondarySwatch;
     RestrictToMaterialGroups = edZone.RestrictToGroupsDefault;
-
-    if (AlwaysActive)
-    {
-      ActiveInEditor = true;
-    }
+    ActiveInEditor = AlwaysActive;
   }
 
   public EditorZoneData(ConfigNode node)
   {
-    Load(node);
+    ConfigNode.LoadObjectFromConfig(this, node);
   }
 
   public ConfigNode Save()
   {
     var node = new ConfigNode(Constants.PERSISTENCE_ZONE_NODE);
-    node.AddValue(NODE_NAME, ZoneName);
-    node.AddValue(NODE_PRIMARY, PrimarySwatch.Name);
-    node.AddValue(NODE_SECONDARY, SecondarySwatch.Name);
-    node.AddValue(NODE_APPLY_AUTOMATICALLY, AutoApply);
-    node.AddValue(NODE_ALWAYSACTIVE, AlwaysActive);
-    node.AddValue(NODE_RESTRICT_SWATCHES, RestrictToMaterialGroups);
+    ConfigNode.CreateConfigFromObject(this, node);
     return node;
-  }
-
-  public void Load(ConfigNode node)
-  {
-    string priSwatchName = "";
-    string secSwatchName = "";
-    node.TryGetValue("name", ref ZoneName);
-    node.TryGetValue(NODE_PRIMARY, ref priSwatchName);
-    node.TryGetValue(NODE_SECONDARY, ref secSwatchName);
-    node.TryGetValue(NODE_ALWAYSACTIVE, ref AlwaysActive);
-    node.TryGetValue(NODE_RESTRICT_SWATCHES, ref RestrictToMaterialGroups);
-    node.TryGetValue(NODE_APPLY_AUTOMATICALLY, ref AutoApply);
-
-    if (priSwatchName != "")
-    {
-      PrimarySwatch = SwatchLibrary.GetSwatch(priSwatchName);
-    }
-
-    if (secSwatchName != "")
-    {
-      SecondarySwatch = SwatchLibrary.GetSwatch(secSwatchName);
-    }
-
-    if (ZoneName == "main")
-    {
-      ActiveInEditor = true;
-    }
   }
 }

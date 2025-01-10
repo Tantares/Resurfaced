@@ -155,7 +155,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
       _currentZone = zoneName;
       foreach (var zoneData in TechnicolorEditorLogic.EditorData.Zones)
       {
-        if (_currentZone == zoneData.ZoneName)
+        if (_currentZone == zoneData.Name)
         {
           ShowLibraryForZoneAndSlot(zoneData);
           PositionLibrary(zoneName, slotType);
@@ -195,7 +195,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
 
   protected void FilterLibraryGroups(EditorZoneData editorZoneData)
   {
-    var validGroups = ZoneLibrary.GetValidGroupsForZone(editorZoneData.ZoneName).ToList();
+    var validGroups = ZoneLibrary.GetValidGroupsForZone(editorZoneData.Name).ToList();
     foreach (var group in _swatchLibraryGroups)
     {
       if (!editorZoneData.RestrictToMaterialGroups)
@@ -229,7 +229,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
 
     foreach (var zoneData in TechnicolorEditorLogic.EditorData.Zones)
     {
-      if (_currentZone == zoneData.ZoneName)
+      if (_currentZone == zoneData.Name)
       {
         if (_currentSlotType == SwatchSlot.Primary)
           zoneData.PrimarySwatch = newSwatch;
@@ -255,7 +255,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
     {
       foreach (var zoneData in TechnicolorEditorLogic.EditorData.Zones)
       {
-        if (widget.zoneName == zoneData.ZoneName)
+        if (widget.zoneName == zoneData.Name)
         {
           Utils.Log($"[ModuleTechnicolor] Setting {widget.zoneName} to {zoneData.ActiveInEditor}",
                     LogType.Any);

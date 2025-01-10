@@ -13,17 +13,8 @@ public class EditorColorZone
   private const string NODE_VALID_GROUP = "ValidGroup";
   public string[] ValidGroups = [];
 
-  [Persistent(name = "DefaultPrimarySwatch")]
-  private string _defaultPrimarySwatchName = SwatchLibrary.DefaultSwatch.Name;
-
-  [Persistent(name = "DefaultSecondarySwatch")]
-  private string _defaultSecondarySwatchName = SwatchLibrary.DefaultSwatch.Name;
-
-  public Swatch DefaultPrimarySwatch =>
-    SwatchLibrary.GetSwatch(_defaultPrimarySwatchName);
-
-  public Swatch DefaultSecondarySwatch =>
-    SwatchLibrary.GetSwatch(_defaultSecondarySwatchName);
+  [Persistent] public string DefaultPrimarySwatch = SwatchLibrary.DefaultSwatch.Name;
+  [Persistent] public string DefaultSecondarySwatch = SwatchLibrary.DefaultSwatch.Name;
 
   public EditorColorZone() { }
 

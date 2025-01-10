@@ -100,12 +100,12 @@ public class ModuleTechnicolor : PartModule
 
   public void SetSwatchesForSlot(EditorZoneData slotData)
   {
-    Utils.Log($"[ModuleTechnicolor] Applying swatches for zone {slotData.ZoneName} To part",
+    Utils.Log($"[ModuleTechnicolor] Applying swatches for zone {slotData.Name} To part",
               LogType.Editor);
 
     for (int i = 0; i < zones.Length; i++)
     {
-      if (zones[i].ZoneName == slotData.ZoneName)
+      if (zones[i].ZoneName == slotData.Name)
       {
         zones[i].SetSwatch(slotData.PrimarySwatch, slotData.SecondarySwatch);
         //zones[i].Apply();
@@ -122,7 +122,7 @@ public class ModuleTechnicolor : PartModule
 
       for (int i = 0; i < zones.Length; i++)
       {
-        if (zones[i].ZoneName == zoneData.ZoneName)
+        if (zones[i].ZoneName == zoneData.Name)
         {
           Utils.Log(
             $"[ModuleTechnicolor] Sampling {zones[i].PrimarySwatch.Name} and {zones[i].SecondarySwatch.Name} from {zones[i].ZoneName}",

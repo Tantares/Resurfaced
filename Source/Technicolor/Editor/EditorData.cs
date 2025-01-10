@@ -16,7 +16,7 @@ public class EditorData
   {
     for (int i = Zones.Count; i-- > 0;)
     {
-      if (Zones[i].ZoneName == name) return Zones[i];
+      if (Zones[i].Name == name) return Zones[i];
     }
 
     return null;
@@ -35,7 +35,7 @@ public class EditorData
       bool found = false;
       for (int i = Zones.Count; i-- > 0;)
       {
-        if (Zones[i].ZoneName != zoneData.ZoneName) continue;
+        if (Zones[i].Name != zoneData.Name) continue;
         Zones[i] = zoneData;
         found = true;
         break;

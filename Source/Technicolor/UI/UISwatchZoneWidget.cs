@@ -99,7 +99,7 @@ public class UISwatchZoneWidget : MonoBehaviour
 
   public void AssignZoneData(EditorZoneData slotData)
   {
-    zoneName = slotData.ZoneName;
+    zoneName = slotData.Name;
     _title.text = slotData.DisplayName;
 
     _primarySlotButton = new(transform.FindDeepChild("Swatch1"), SwatchSlot.Primary, this);
@@ -141,7 +141,7 @@ public class UISwatchZoneWidget : MonoBehaviour
   {
     foreach (var swatch in TechnicolorEditorLogic.EditorData.Zones)
     {
-      if (swatch.ZoneName == zoneName)
+      if (swatch.Name == zoneName)
       {
         swatch.AutoApply = _autoToggle.isOn;
       }
@@ -152,7 +152,7 @@ public class UISwatchZoneWidget : MonoBehaviour
   {
     foreach (var swatch in TechnicolorEditorLogic.EditorData.Zones)
     {
-      if (swatch.ZoneName == zoneName)
+      if (swatch.Name == zoneName)
       {
         swatch.RestrictToMaterialGroups = _restrictToggle.isOn;
       }
