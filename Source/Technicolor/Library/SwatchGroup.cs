@@ -4,8 +4,8 @@ namespace Technicolor;
 
 public class SwatchGroup
 {
-  [Persistent(name = "name")] public string Name = "default";
-  [Persistent] public string DisplayName = "Default";
+  [Persistent(name = "name")] public readonly string Name = "default";
+  [Persistent] public readonly string DisplayName = "Default";
 
   public SwatchGroup() { }
 

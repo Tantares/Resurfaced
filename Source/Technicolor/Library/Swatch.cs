@@ -5,15 +5,15 @@ namespace Technicolor;
 
 public class Swatch
 {
-  [Persistent] public string Name = "default";
-  [Persistent(name = "DisplayName")] private string _displayName = "Default";
+  [Persistent] public readonly string Name = "default";
+  [Persistent(name = "DisplayName")] private readonly string _displayName = "Default";
   public string DisplayName = "Default";
-  [Persistent] public string Group = "internal";
-  [Persistent] public Color Color = Color.white;
-  [Persistent] public float Metalness = 0f;
-  [Persistent] public float Smoothness = 0.2f;
-  [Persistent] public float MetalBlend = 1f;
-  [Persistent] public float SmoothBlend = 1f;
+  [Persistent] public readonly string Group = "internal";
+  [Persistent] public readonly Color Color = Color.white;
+  [Persistent] public readonly float Metalness = 0f;
+  [Persistent] public readonly float Smoothness = 0.2f;
+  [Persistent] public readonly float MetalBlend = 1f;
+  [Persistent] public readonly float SmoothBlend = 1f;
 
   public Sprite Thumbnail;
   public Sprite ThumbnailLeft;

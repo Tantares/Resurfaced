@@ -4,17 +4,17 @@ namespace Technicolor;
 
 public class EditorColorZone
 {
-  [Persistent] public string Name = "Default";
-  [Persistent(name = "DisplayName")] private string _displayName = "Default";
-  public string DisplayName = "Default";
-  [Persistent] public bool AlwaysActive = false;
-  [Persistent] public bool RestrictToGroupsDefault = false;
+  [Persistent] public readonly string Name = "Default";
+  [Persistent(name = "DisplayName")] private readonly string _displayName = "Default";
+  public readonly string DisplayName = "Default";
+  [Persistent] public readonly bool AlwaysActive = false;
+  [Persistent] public readonly bool RestrictToGroupsDefault = false;
 
   private const string NODE_VALID_GROUP = "ValidGroup";
-  public string[] ValidGroups = [];
+  public readonly string[] ValidGroups = [];
 
-  [Persistent] public string DefaultPrimarySwatch = SwatchLibrary.DefaultSwatch.Name;
-  [Persistent] public string DefaultSecondarySwatch = SwatchLibrary.DefaultSwatch.Name;
+  [Persistent] public readonly string DefaultPrimarySwatchName = SwatchLibrary.DefaultSwatch.Name;
+  [Persistent] public readonly string DefaultSecondarySwatchName = SwatchLibrary.DefaultSwatch.Name;
 
   public EditorColorZone() { }
 

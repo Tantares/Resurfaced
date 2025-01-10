@@ -31,8 +31,8 @@ public class EditorZoneData
   public EditorZoneData(EditorColorZone edZone)
   {
     Name = edZone.Name;
-    _primarySwatchName = edZone.DefaultPrimarySwatch;
-    _secondarySwatchName = edZone.DefaultSecondarySwatch;
+    _primarySwatchName = edZone.DefaultPrimarySwatchName;
+    _secondarySwatchName = edZone.DefaultSecondarySwatchName;
     RestrictToMaterialGroups = edZone.RestrictToGroupsDefault;
     ActiveInEditor = AlwaysActive;
   }
