@@ -8,6 +8,28 @@ public class ModuleTechnicolor : PartModule
 
   [SerializeField] public ColorZone[] zones;
 
+  public override void OnLoad(ConfigNode node)
+  {
+    base.OnLoad(node);
+
+    var zoneNodes = node.GetNodes(Constants.MODULE_COLOR_NODE);
+
+    int zoneCount = Mathf.Max(1, zoneNodes.Length);
+    zones = new ColorZone[zoneCount];
+    for (int i = 0; i < zoneNodes.Length; i++)
+    {
+      var zn = ScriptableObject.CreateInstance<ColorZone>();
+      zn.Load(zoneNodes[i]);
+      zones[i] = zn;
+    }
+
+    if (zoneNodes.Length == 0)
+    {
+      var zn = ScriptableObject.CreateInstance<ColorZone>();
+      zones[0] = zn;
+    }
+  }
+
   public override void OnStart(StartState state)
   {
     base.OnStart(state);
@@ -50,26 +72,9 @@ public class ModuleTechnicolor : PartModule
     }
   }
 
-  public override void OnLoad(ConfigNode node)
+  public void LateUpdate()
   {
-    base.OnLoad(node);
-
-    var zoneNodes = node.GetNodes(Constants.MODULE_COLOR_NODE);
-
-    int zoneCount = Mathf.Max(1, zoneNodes.Length);
-    zones = new ColorZone[zoneCount];
-    for (int i = 0; i < zoneNodes.Length; i++)
-    {
-      var zn = ScriptableObject.CreateInstance<ColorZone>();
-      zn.Load(zoneNodes[i]);
-      zones[i] = zn;
-    }
-
-    if (zoneNodes.Length == 0)
-    {
-      var zn = ScriptableObject.CreateInstance<ColorZone>();
-      zones[0] = zn;
-    }
+    RefreshMPB();
   }
 
   public override void OnSave(ConfigNode node)
@@ -142,11 +147,6 @@ public class ModuleTechnicolor : PartModule
       {
         zones[i].Apply();
       }
-  }
-
-  public void LateUpdate()
-  {
-    RefreshMPB();
   }
 
   private MaterialPropertyBlock? mpb;
