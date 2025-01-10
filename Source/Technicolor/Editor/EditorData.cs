@@ -14,10 +14,9 @@ public class EditorData
 
   public EditorZoneData GetZone(string name)
   {
-    for (int i = 0; i < Zones.Count; i++)
+    for (int i = Zones.Count; i-- > 0;)
     {
-      if (Zones[i].ZoneName == name)
-        return Zones[i];
+      if (Zones[i].ZoneName == name) return Zones[i];
     }
 
     return null;
@@ -25,21 +24,24 @@ public class EditorData
 
   public void Save(ConfigNode node)
   {
-    foreach (var zoneData in Zones)
-    {
-      node.AddNode(zoneData.Save());
-    }
+    foreach (var zoneData in Zones) node.AddNode(zoneData.Save());
   }
 
   public void Load(ConfigNode node)
   {
     foreach (var zoneNode in node.GetNodes("EDITOR_COLOR_ZONE"))
     {
-      EditorZoneData loadedData = new(zoneNode);
-      if (Zones.Find(x => x.ZoneName == loadedData.ZoneName) == null)
+      EditorZoneData zoneData = new(zoneNode);
+      bool found = false;
+      for (int i = Zones.Count; i-- > 0;)
       {
-        Zones.Add(loadedData);
+        if (Zones[i].ZoneName != zoneData.ZoneName) continue;
+        Zones[i] = zoneData;
+        found = true;
+        break;
       }
+
+      if (!found) Zones.Add(zoneData);
     }
   }
 }
