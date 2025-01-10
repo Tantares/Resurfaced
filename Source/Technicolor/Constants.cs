@@ -4,24 +4,24 @@ namespace Technicolor;
 
 public static class Constants
 {
-  public static string SETTINGS_CONFIG_NODE =
+  public const string SETTINGS_CONFIG_NODE =
     "Technicolor/TechnicolorSettings/TECHNICOLOR_SETTINGS";
 
-  public static string SWATCH_LIBRARY_CONFIG_NODE = "TECHNICOLOR_SWATCHES";
-  public static string SWATCH_CONFIG_NODE = "PRESET_SWATCH";
+  public const string SWATCH_LIBRARY_CONFIG_NODE = "TECHNICOLOR_SWATCHES";
+  public const string SWATCH_CONFIG_NODE = "PRESET_SWATCH";
 
-  public static string GROUP_LIBRARY_CONFIG_NODE = "TECHNICOLOR_SWATCH_GROUPS";
-  public static string GROUP_CONFIG_NODE = "SWATCH_GROUP";
+  public const string GROUP_LIBRARY_CONFIG_NODE = "TECHNICOLOR_SWATCH_GROUPS";
+  public const string GROUP_CONFIG_NODE = "SWATCH_GROUP";
 
-  public static string EDITORZONE_LIBRARY_CONFIG_NODE = "TECHNICOLOR_ZONES";
-  public static string EDITORZONE_CONFIG_NODE = "EDITOR_COLOR_ZONE";
+  public const string EDITORZONE_LIBRARY_CONFIG_NODE = "TECHNICOLOR_ZONES";
+  public const string EDITORZONE_CONFIG_NODE = "EDITOR_COLOR_ZONE";
 
-  public static string PERSISTENCE_NODE = "EDITORSWATCHCONFIG";
-  public static string PERSISTENCE_ZONE_NODE = "EDITOR_COLOR_ZONE";
+  public const string PERSISTENCE_NODE = "EDITORSWATCHCONFIG";
+  public const string PERSISTENCE_ZONE_NODE = "EDITOR_COLOR_ZONE";
 
-  public static string MODULE_COLOR_NODE = "COLORZONE";
+  public const string MODULE_COLOR_NODE = "COLORZONE";
 
-  public static string TEAMCOLOR_SHADER_NAME = "Resurfaced/Standard (TC)";
+  public const string TEAMCOLOR_SHADER_NAME = "Resurfaced/Standard (TC)";
 }
 
 public static class ShaderPropertyID

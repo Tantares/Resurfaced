@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Technicolor;
 
 public class EditorData
 {
-  public List<EditorZoneData> Zones;
+  public readonly List<EditorZoneData> Zones;
 
   public EditorData()
   {
-    Zones = new();
-    foreach (var zone in ZoneLibrary.EditorColorZones.Values)
-    {
-      Zones.Add(new(zone));
-    }
+    Zones = ZoneLibrary.EditorColorZones.Values.Select(zone => new EditorZoneData(zone)).ToList();
   }
 
   public EditorZoneData GetZone(string name)
@@ -36,9 +33,6 @@ public class EditorData
 
   public void Load(ConfigNode node)
   {
-    if (Zones == null)
-      Zones = new();
-
     foreach (var zoneNode in node.GetNodes("EDITOR_COLOR_ZONE"))
     {
       EditorZoneData loadedData = new(zoneNode);

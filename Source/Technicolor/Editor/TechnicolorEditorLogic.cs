@@ -1,25 +1,56 @@
-﻿using UnityEngine;
+﻿namespace Technicolor;
 
-namespace Technicolor;
-
-[KSPAddon(KSPAddon.Startup.EditorAny, false)]
-public class TechnicolorEditorLogic : MonoBehaviour
+[KSPScenario(ScenarioCreationOptions.AddToAllGames, GameScenes.EDITOR)]
+public class TechnicolorEditorLogic : ScenarioModule
 {
-  public static EditorData EditorData;
   public static TechnicolorEditorLogic Instance;
-  public static TechnicolorEditorRollover Rollover;
+
+  public static EditorData EditorData;
+  public TechnicolorEditorRollover Rollover;
+
+  public override void OnAwake()
+  {
+    Instance = this;
+    EditorData ??= new();
+  }
+
+  public override void OnLoad(ConfigNode node)
+  {
+    Utils.Log("[TechnicolorEditorLogic]: Started loading data", LogType.Loading);
+    base.OnLoad(node);
+    var persistedData = node.GetNode(Constants.PERSISTENCE_NODE);
+    if (persistedData != null)
+    {
+      EditorData.Load(persistedData);
+    }
+
+    Utils.Log("[TechnicolorEditorLogic]: Done loading data", LogType.Loading);
+  }
 
   public void Start()
   {
-    if (EditorData == null)
-    {
-      EditorData = new();
-    }
-
     EditorLogic.fetch.toolsUI.gameObject.AddComponent<TechnicolorEditorModes>();
-    GameEvents.onVariantApplied.Add(new(OnPartVariantApplied));
+    GameEvents.onVariantApplied.Add(OnPartVariantApplied);
 
     Rollover = gameObject.AddComponent<TechnicolorEditorRollover>();
+  }
+
+  public override void OnSave(ConfigNode node)
+  {
+    Utils.Log("[TechnicolorEditorLogic]: Started saving data", LogType.Loading);
+    base.OnSave(node);
+    ConfigNode swatchNode = new(Constants.PERSISTENCE_NODE);
+    EditorData.Save(swatchNode);
+    node.AddNode(swatchNode);
+
+    Utils.Log("[TechnicolorEditorLogic]: Finished saving data", LogType.Loading);
+  }
+
+  public void OnDestroy()
+  {
+    Instance = null;
+    GameEvents.onVariantApplied.Remove(OnPartVariantApplied);
+    Destroy(Rollover);
   }
 
   public static void GetSwatchesFromPart(ModuleTechnicolor module)
@@ -42,25 +73,10 @@ public class TechnicolorEditorLogic : MonoBehaviour
   /// <param name="partVariant"></param>
   public void OnPartVariantApplied(Part part, PartVariant partVariant)
   {
-    if (part != null)
-    {
-      var module = part.GetComponent<ModuleTechnicolor>();
-      if (module != null)
-      {
-        //module.ApplySwatches();
-        Utils.Log($"[TechnicolorEditorLogic] Painting part", LogType.Editor);
-      }
-    }
-  }
-
-  private void Awake()
-  {
-    Instance = this;
-  }
-
-  private void OnDestroy()
-  {
-    Instance = null;
-    GameEvents.onVariantApplied.Remove(OnPartVariantApplied);
+    if (part == null) return;
+    var module = part.GetComponent<ModuleTechnicolor>();
+    if (module == null) return;
+    //module.ApplySwatches();
+    Utils.Log($"[TechnicolorEditorLogic] Painting part", LogType.Editor);
   }
 }
