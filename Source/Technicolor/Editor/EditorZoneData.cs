@@ -42,10 +42,8 @@ public class EditorZoneData
     ConfigNode.LoadObjectFromConfig(this, node);
   }
 
-  public ConfigNode Save()
+  public void Save(ConfigNode node)
   {
-    var node = new ConfigNode(Constants.PERSISTENCE_ZONE_NODE);
     ConfigNode.CreateConfigFromObject(this, node);
-    return node;
   }
 }

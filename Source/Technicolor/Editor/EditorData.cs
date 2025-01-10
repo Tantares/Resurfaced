@@ -24,12 +24,17 @@ public class EditorData
 
   public void Save(ConfigNode node)
   {
-    foreach (var zoneData in Zones) node.AddNode(zoneData.Save());
+    foreach (var zoneData in Zones)
+    {
+      var zoneDataNode = new ConfigNode(Constants.PERSISTENCE_ZONE_NODE);
+      zoneData.Save(zoneDataNode);
+      node.AddNode(zoneDataNode);
+    }
   }
 
   public void Load(ConfigNode node)
   {
-    foreach (var zoneNode in node.GetNodes("EDITOR_COLOR_ZONE"))
+    foreach (var zoneNode in node.GetNodes(Constants.PERSISTENCE_ZONE_NODE))
     {
       EditorZoneData zoneData = new(zoneNode);
       bool found = false;
