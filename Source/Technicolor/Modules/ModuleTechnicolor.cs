@@ -119,6 +119,7 @@ public class ModuleTechnicolor : PartModule
 
   public void SetZoneSwatches(EditorZoneData data)
   {
+    if (!ZoneData.ContainsKey(data.Name)) return;
     Utils.Log($"[ModuleTechnicolor] Applying swatches for zone {data.Name} To part",
               LogType.Editor);
     ZoneData[data.Name].SetSwatches(data);
