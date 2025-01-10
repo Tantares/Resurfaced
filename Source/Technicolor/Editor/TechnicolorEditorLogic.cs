@@ -63,7 +63,7 @@ public class TechnicolorEditorLogic : ScenarioModule
   public static void PaintPart(ModuleTechnicolor module)
   {
     Utils.Log($"[TechnicolorEditorLogic] Painting part", LogType.Editor);
-    module.SetPartSwatches(EditorData);
+    module.SetAllSwatches(EditorData);
   }
 
   /// <summary>

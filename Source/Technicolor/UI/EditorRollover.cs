@@ -53,9 +53,9 @@ public class TechnicolorEditorRollover : MonoBehaviour
         if (part != _prevPart)
         {
           string zones = "";
-          foreach (var zn in module.zones)
+          foreach (var zn in module.ZoneData.Values)
           {
-            zones += $" • {ZoneLibrary.GetZoneDisplayName(zn.ZoneName)}\n";
+            zones += $" • {ZoneLibrary.GetZoneDisplayName(zn.Name)}\n";
           }
 
           widgetPanel.SetText(zones);

@@ -52,9 +52,11 @@
     </PropertyGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <ItemGroup>
+        <Compile Include="Editor\ZoneDataBase.cs"/>
         <Compile Include="Library\EditorColorZone.cs"/>
         <Compile Include="Library\SwatchGroup.cs"/>
         <Compile Include="Editor\EditorZoneData.cs"/>
+        <Compile Include="Modules\PartZoneData.cs"/>
         <Compile Include="UI\EditorRollover.cs"/>
         <Compile Include="Editor\TechnicolorEditorModes.cs"/>
         <Compile Include="Editor\EditorData.cs"/>

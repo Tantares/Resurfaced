@@ -1,28 +1,8 @@
 ﻿namespace Technicolor;
 
-public class EditorZoneData
+public class EditorZoneData : ZoneDataBase
 {
-  [Persistent] public readonly string Name;
-
-  public EditorColorZone EditorZone => ZoneLibrary.EditorColorZones[Name];
-
-  public string DisplayName => EditorZone.DisplayName;
   public bool AlwaysActive => EditorZone.AlwaysActive;
-
-  [Persistent(name = "PrimarySwatch")] private string _primarySwatchName;
-  [Persistent(name = "SecondarySwatch")] private string _secondarySwatchName;
-
-  public Swatch PrimarySwatch
-  {
-    get => SwatchLibrary.GetSwatch(_primarySwatchName);
-    set => _primarySwatchName = value.Name;
-  }
-
-  public Swatch SecondarySwatch
-  {
-    get => SwatchLibrary.GetSwatch(_secondarySwatchName);
-    set => _secondarySwatchName = value.Name;
-  }
 
   [Persistent] public bool RestrictToMaterialGroups = true;
   [Persistent] public bool AutoApply = false;

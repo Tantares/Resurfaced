@@ -17,6 +17,8 @@ public static class Utils
 {
   public static string ModName = "Technicolor";
 
+  public static bool IsLoadingPrefab() => !PartLoader.Instance.IsReady();
+
   /// <summary>
   ///   Log a message with the mod name tag prefixed
   /// </summary>

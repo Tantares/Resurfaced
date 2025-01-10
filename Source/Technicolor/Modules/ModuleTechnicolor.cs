@@ -1,74 +1,87 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Technicolor;
 
 public class ModuleTechnicolor : PartModule
 {
-  [KSPField(isPersistant = true)] public bool FirstPlaced = true;
+  /// <summary>
+  /// Stores readonly zone information specified in the part config. Only parsed during prefab
+  /// compilation; the prefab data is referenced by instanced parts.
+  /// </summary>
+  public Dictionary<string, ColorZone> ConfigZones = null;
 
-  [SerializeField] public ColorZone[] zones;
+  /// <summary>
+  /// Stores the user-selected swatches for each zone. Only populated by instantiated parts and
+  /// is serialized to the vessel. If the serialized data is empty in `OnLoad`, the part is freshly
+  /// instantiated and the default swatch selections are applied.
+  /// </summary>
+  public readonly Dictionary<string, PartZoneData> ZoneData = [];
 
   public override void OnLoad(ConfigNode node)
   {
     base.OnLoad(node);
 
-    var zoneNodes = node.GetNodes(Constants.MODULE_COLOR_NODE);
-
-    int zoneCount = Mathf.Max(1, zoneNodes.Length);
-    zones = new ColorZone[zoneCount];
-    for (int i = 0; i < zoneNodes.Length; i++)
+    if (Utils.IsLoadingPrefab())
     {
-      var zn = ScriptableObject.CreateInstance<ColorZone>();
-      zn.Load(zoneNodes[i]);
-      zones[i] = zn;
+      // Loading prefab. Parse all zones in the part config.
+      ConfigZones = new();
+
+      foreach (var zoneNode in node.GetNodes(Constants.MODULE_COLOR_NODE))
+      {
+        ColorZone configZone = new(zoneNode);
+        ConfigZones[configZone.Name] = configZone;
+      }
+
+      if (ConfigZones.Count == 0)
+      {
+        ColorZone defaultZone = new();
+        ConfigZones[defaultZone.Name] = defaultZone;
+      }
     }
 
-    if (zoneNodes.Length == 0)
-    {
-      var zn = ScriptableObject.CreateInstance<ColorZone>();
-      zones[0] = zn;
-    }
+    Initialize(node.GetNodes(Constants.MODULE_COLOR_DATA_NODE));
   }
 
   public override void OnStart(StartState state)
   {
     base.OnStart(state);
-    if (HighLogic.LoadedSceneIsEditor || HighLogic.LoadedSceneIsFlight)
+    Initialize([]);
+  }
+
+  private void Initialize(ConfigNode[] zoneDataNodes)
+  {
+    // Initialization may occur either in `OnLoad` or `OnStart`. Initialize only once.
+    if (ZoneData.Count > 0) return;
+
+    // If there are no config zones, pull them from the prefab.
+    ConfigZones ??= part.partInfo.partPrefab.Modules.GetModule<ModuleTechnicolor>().ConfigZones;
+
+    var savedZones = zoneDataNodes
+      .Select(dataNode => new PartZoneData(this, dataNode))
+      .ToDictionary(zone => zone.Name);
+
+    // Initialize zones from the saved data as much as possible.
+    // Try to handle cases where the zones in the config have changed gracefully.
+    foreach (string zoneName in ConfigZones.Keys)
     {
-      if (zones != null)
+      if (!savedZones.TryGetValue(zoneName, out var zone))
       {
-        if (FirstPlaced)
+        // Create a new zone from the part config if one was not found.
+        zone = new(this, zoneName);
+
+        // Respect the editor's auto-apply option if possible.
+        if (HighLogic.LoadedSceneIsEditor)
         {
-          Utils.Log($"[ModuleTechnicolor] Collecting initial info from object", LogType.Loading);
-          // Copy out of the scriptable object
-          var copyTarget = new ColorZone[zones.Length];
-          for (int i = 0; i < copyTarget.Length; i++)
-          {
-            copyTarget[i] = Instantiate(zones[i]);
-          }
-
-          zones = copyTarget;
+          var editorZoneData = TechnicolorEditorLogic.EditorData.GetZone(zoneName);
+          if (editorZoneData.AutoApply) zone.SetSwatches(editorZoneData);
         }
-
-        for (int i = 0; i < zones.Length; i++)
-        {
-          if (FirstPlaced)
-          {
-            var z = TechnicolorEditorLogic.EditorData.GetZone(zones[i].ZoneName);
-            if (z.AutoApply)
-            {
-              zones[i].Initialize(part, z.PrimarySwatch.Name, z.SecondarySwatch.Name);
-            }
-            else
-            {
-              zones[i].Initialize(part);
-            }
-          }
-          else { }
-        }
-
-        FirstPlaced = false;
       }
+
+      zone.FindTargetRenderers();
+      ZoneData[zoneName] = zone;
     }
   }
 
@@ -81,92 +94,59 @@ public class ModuleTechnicolor : PartModule
   {
     base.OnSave(node);
 
-    if (zones != null)
+    foreach (var zone in ZoneData.Values)
     {
-      for (int i = 0; i < zones.Length; i++)
-      {
-        var zoneNode = new ConfigNode(Constants.MODULE_COLOR_NODE);
-        zones[i].Save(zoneNode);
-        node.AddNode(zoneNode);
-      }
+      var zoneDataNode = new ConfigNode(Constants.MODULE_COLOR_DATA_NODE);
+      zone.Save(zoneDataNode);
+      node.AddNode(zoneDataNode);
     }
   }
 
-  public void SetPartSwatches(EditorData swatches)
+  public void SetAllSwatches(EditorData editorData)
   {
-    foreach (var zoneData in swatches.Zones)
+    foreach (var editorZoneData in editorData.Zones)
     {
-      if (zoneData.ActiveInEditor)
-      {
-        SetSwatchesForSlot(zoneData);
-      }
+      if (editorZoneData.ActiveInEditor) SetZoneSwatches(editorZoneData);
     }
   }
 
-  public void SetSwatchesForSlot(EditorZoneData slotData)
+  public void SetZoneSwatches(EditorZoneData data)
   {
-    Utils.Log($"[ModuleTechnicolor] Applying swatches for zone {slotData.Name} To part",
+    Utils.Log($"[ModuleTechnicolor] Applying swatches for zone {data.Name} To part",
               LogType.Editor);
+    ZoneData[data.Name].SetSwatches(data);
+  }
 
-    for (int i = 0; i < zones.Length; i++)
+  public void GetPartSwatches(ref EditorData editorData)
+  {
+    foreach (var editorZoneData in editorData.Zones)
     {
-      if (zones[i].ZoneName == slotData.Name)
+      if (!ZoneData.TryGetValue(editorZoneData.Name, out var partZone))
       {
-        zones[i].SetSwatch(slotData.PrimarySwatch, slotData.SecondarySwatch);
-        //zones[i].Apply();
+        editorZoneData.ActiveInEditor = editorZoneData.AlwaysActive;
+        continue;
       }
+
+      Utils.Log(
+        $"[ModuleTechnicolor] Sampling {partZone.PrimarySwatch.Name} and {partZone.SecondarySwatch.Name} from {partZone.Name}",
+        LogType.Editor);
+      editorZoneData.ActiveInEditor = true;
+      editorZoneData.PrimarySwatch = partZone.PrimarySwatch;
+      editorZoneData.SecondarySwatch = partZone.SecondarySwatch;
     }
   }
 
-  public void GetPartSwatches(ref EditorData swatches)
-  {
-    foreach (var zoneData in swatches.Zones)
-    {
-      if (!zoneData.AlwaysActive)
-        zoneData.ActiveInEditor = false;
-
-      for (int i = 0; i < zones.Length; i++)
-      {
-        if (zones[i].ZoneName == zoneData.Name)
-        {
-          Utils.Log(
-            $"[ModuleTechnicolor] Sampling {zones[i].PrimarySwatch.Name} and {zones[i].SecondarySwatch.Name} from {zones[i].ZoneName}",
-            LogType.Editor);
-          zoneData.ActiveInEditor = true;
-          zoneData.PrimarySwatch = zones[i].PrimarySwatch ?? zoneData.PrimarySwatch;
-          zoneData.SecondarySwatch = zones[i].SecondarySwatch ?? zoneData.SecondarySwatch;
-        }
-      }
-    }
-  }
-
-  public void ApplySwatches()
-  {
-    if (zones != null)
-      for (int i = 0; i < zones.Length; i++)
-      {
-        zones[i].Apply();
-      }
-  }
-
-  private MaterialPropertyBlock? mpb;
+  private MaterialPropertyBlock mpb;
   private MaterialUtils.PartMPBProperties partMPBProps = new();
 
   protected void RefreshMPB()
   {
-    if (mpb == null)
-      mpb = new();
+    if (mpb == null) mpb = new();
 
     mpb.Clear();
     part.ExtractMPBProperties(ref partMPBProps);
     partMPBProps.WriteTo(ref mpb);
 
-    if (zones != null)
-    {
-      for (int i = 0; i < zones.Length; i++)
-      {
-        zones[i].Apply(mpb);
-      }
-    }
+    foreach (var zone in ZoneData.Values) zone.Apply(mpb);
   }
 }

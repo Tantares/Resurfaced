@@ -20,6 +20,7 @@ public static class Constants
   public const string PERSISTENCE_ZONE_NODE = "EDITOR_COLOR_ZONE";
 
   public const string MODULE_COLOR_NODE = "COLORZONE";
+  public const string MODULE_COLOR_DATA_NODE = "COLORZONE_DATA";
 
   public const string TEAMCOLOR_SHADER_NAME = "Resurfaced/Standard (TC)";
 }
