@@ -40,19 +40,11 @@ public class PartZoneData : ZoneDataBase
   {
     _renderers.Clear();
 
-    if (_configZone.Transforms.Count == 0)
+    bool blanket = _configZone.Transforms.Count == 0;
+    foreach (var renderer in _part.GetComponentsInChildren<Renderer>(true))
     {
-      // No specified transforms; gather renderers from the entire part.
-      _renderers.AddRange(_part.GetComponentsInChildren<Renderer>(true));
-    }
-    else
-    {
-      // Only gather renderers parented to the specified transforms.
-      foreach (var transform in _part.GetComponentsInChildren<Transform>(true))
-      {
-        if (!_configZone.Transforms.Contains(transform.name)) continue;
-        _renderers.AddRange(transform.GetComponentsInChildren<Renderer>(true));
-      }
+      if (blanket || _configZone.Transforms.Contains(renderer.transform.name))
+        _renderers.Add(renderer);
     }
   }
 
