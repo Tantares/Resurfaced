@@ -3,11 +3,13 @@ using UnityEngine;
 
 namespace Technicolor;
 
+# pragma warning disable CS0649
+
 public class Swatch
 {
   [Persistent] public readonly string Name = "default";
-  [Persistent(name = "DisplayName")] private readonly string _displayName = "Default";
-  public string DisplayName = "Default";
+  [Persistent(name = "DisplayName")] private readonly string _displayName;
+  public readonly string DisplayName;
   [Persistent] public readonly string Group = "internal";
   [Persistent] public readonly Color Color = Color.white;
   [Persistent] public readonly float Metalness = 0f;
@@ -24,15 +26,12 @@ public class Swatch
   public Swatch(ConfigNode node)
   {
     ConfigNode.LoadObjectFromConfig(this, node);
-    DisplayName = Localizer.Format(_displayName);
+    DisplayName = Localizer.Format(_displayName ?? Name);
   }
 
   public void GenerateThumbnail()
   {
-    if (Thumbnail != null)
-    {
-      return;
-    }
+    if (Thumbnail != null) return;
 
     Utils.Log($"[TechnicolorSwatch] Rendering swatch thumbnails for {Name}", LogType.UI);
 

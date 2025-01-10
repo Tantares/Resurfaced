@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Technicolor;
@@ -11,28 +12,24 @@ public static class SwatchLibrary
 
   private static readonly Dictionary<string, Swatch> _swatchNameCache = new();
 
-  public static bool HasSwatch(string name)
+  public static bool Has(string name)
   {
-    if (_swatchNameCache.ContainsKey(name))
-    {
-      return true;
-    }
+    if (String.IsNullOrEmpty(name)) return false;
+
+    if (_swatchNameCache.ContainsKey(name)) return true;
 
     if (Swatches.Find(s => s.Name == name) is Swatch sw)
     {
-      _swatchNameCache.Add(name, sw);
+      _swatchNameCache[name] = sw;
       return true;
     }
 
     return false;
   }
 
-  public static Swatch GetSwatch(string name)
+  public static Swatch Get(string name)
   {
-    if (HasSwatch(name))
-    {
-      return _swatchNameCache[name];
-    }
+    if (Has(name)) return _swatchNameCache[name];
 
     Utils.Log($"[SwatchLibrary] swatch {name} could not be found", LogType.Any);
     return DefaultSwatch;
@@ -67,7 +64,7 @@ public static class SwatchLibrary
         try
         {
           SwatchGroup sg = new(subNode);
-          SwatchGroups.Add(sg.Name, sg);
+          SwatchGroups[sg.Name] = sg;
         }
         catch
         {
@@ -87,10 +84,7 @@ public static class SwatchLibrary
       Color.RGBToHSV(y.Color, out float h2, out float _, out float _);
 
       int compareSmooth = x.Smoothness.CompareTo(y.Smoothness);
-      if (compareSmooth != 0)
-      {
-        return compareSmooth;
-      }
+      if (compareSmooth != 0) return compareSmooth;
 
       int compareHue = h1.CompareTo(h2);
       return compareHue;

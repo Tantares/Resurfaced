@@ -31,8 +31,15 @@ public class ModuleTechnicolor : PartModule
 
       foreach (var zoneNode in node.GetNodes(Constants.MODULE_COLOR_NODE))
       {
-        ColorZone configZone = new(zoneNode);
-        ConfigZones[configZone.Name] = configZone;
+        try
+        {
+          ColorZone configZone = new(zoneNode);
+          ConfigZones[configZone.Name] = configZone;
+        }
+        catch (Exception e)
+        {
+          Utils.LogWarning($"{e.Message}");
+        }
       }
 
       if (ConfigZones.Count == 0)

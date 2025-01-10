@@ -21,6 +21,7 @@ public static class Settings
 
   public static int SwatchRenderResolution = 64;
 
+  public static string DefaultZoneName = "main";
   public static string DefaultPrimarySwatch = "porkjetWhite";
   public static string DefaultSecondarySwatch = "porkjetBlack";
 
@@ -49,6 +50,7 @@ public static class Settings
       settingsNode.TryGetValue("DebugUI", ref DebugUI);
       settingsNode.TryGetValue("DebugEditor", ref DebugEditor);
 
+      settingsNode.TryGetValue("DefaultZoneName", ref DefaultZoneName);
       settingsNode.TryGetValue("DefaultPrimarySwatch", ref DefaultPrimarySwatch);
       settingsNode.TryGetValue("DefaultSecondarySwatch", ref DefaultSecondarySwatch);
 

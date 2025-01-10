@@ -17,7 +17,7 @@ public static class ZoneLibrary
         try
         {
           EditorColorZone cz = new(subNode);
-          EditorColorZones.Add(cz.Name, cz);
+          EditorColorZones[cz.Name] = cz;
         }
         catch
         {

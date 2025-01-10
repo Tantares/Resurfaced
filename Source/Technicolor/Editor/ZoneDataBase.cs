@@ -13,13 +13,13 @@ public abstract class ZoneDataBase
 
   public Swatch PrimarySwatch
   {
-    get => SwatchLibrary.GetSwatch(_primarySwatchName);
+    get => SwatchLibrary.Get(_primarySwatchName);
     set => _primarySwatchName = value.Name;
   }
 
   public Swatch SecondarySwatch
   {
-    get => SwatchLibrary.GetSwatch(_secondarySwatchName);
+    get => SwatchLibrary.Get(_secondarySwatchName);
     set => _secondarySwatchName = value.Name;
   }
 }
