@@ -33,9 +33,7 @@ public class UILibrarySwatchGroup : MonoBehaviour
   public void SetGroup(SwatchGroup group)
   {
     _group = group;
-    SwatchesShown = true;
-    _headerText.text = $"▶ {_group.DisplayName}";
-
+    SetSwatchesShown(true);
     CreateGroupSwatches();
   }
 
