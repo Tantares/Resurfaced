@@ -55,7 +55,14 @@ public class TechnicolorEditorRollover : MonoBehaviour
           string zones = "";
           foreach (var zn in module.ZoneData.Values)
           {
-            zones += $" • {ZoneLibrary.GetZoneDisplayName(zn.Name)}\n";
+            if (zones == "")
+            {
+              zones += $"\n • {ZoneLibrary.GetZoneDisplayName(zn.Name)}";
+            }
+            else
+            {
+              zones += $"• {ZoneLibrary.GetZoneDisplayName(zn.Name)}";
+            }
           }
 
           widgetPanel.SetText(zones);
@@ -76,7 +83,6 @@ public class TechnicolorEditorRollover : MonoBehaviour
   protected void SetVisibility(bool state)
   {
     Visible = state;
-    //Utils.Log($"[TechnicolorEditorRollover]: setting vis from {widget.activeSelf} to {state}", LogType.UI);
     if (widget.activeSelf != state)
     {
       widget.SetActive(state);

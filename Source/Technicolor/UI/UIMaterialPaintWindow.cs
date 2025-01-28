@@ -36,7 +36,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
   protected Dropdown _zoneDropdown;
 
   protected List<UILibrarySwatchGroup> _swatchLibraryGroups;
-  protected List<UISwatchZoneWidget> _zoneWidgets;
+  protected List<UISwatchZoneWidget> _zoneWidgets = new();
 
   protected bool _windowOpen = false;
   protected RectTransform _rect;
