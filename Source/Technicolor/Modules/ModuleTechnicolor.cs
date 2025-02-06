@@ -109,12 +109,20 @@ public class ModuleTechnicolor : PartModule
     }
   }
 
-  public void SetAllSwatches(EditorData editorData)
+  public void SetAllSwatches(EditorData editorData, bool updateCounterparts = true)
   {
     foreach (var editorZoneData in editorData.Zones)
     {
       if (editorZoneData.ActiveInEditor) SetZoneSwatches(editorZoneData);
     }
+    if (updateCounterparts)
+    {
+      foreach (Part p in part.symmetryCounterparts)
+      {
+        p.GetComponent<ModuleTechnicolor>()?.SetAllSwatches(editorData, false);
+      }
+    }
+
   }
 
   public void SetZoneSwatches(EditorZoneData data)

@@ -57,11 +57,11 @@ public class TechnicolorEditorRollover : MonoBehaviour
           {
             if (zones == "")
             {
-              zones += $"\n • {ZoneLibrary.GetZoneDisplayName(zn.Name)}";
+              zones += $"• {ZoneLibrary.GetZoneDisplayName(zn.Name)}";
             }
             else
             {
-              zones += $"• {ZoneLibrary.GetZoneDisplayName(zn.Name)}";
+              zones += $"\n• {ZoneLibrary.GetZoneDisplayName(zn.Name)}";
             }
           }
 

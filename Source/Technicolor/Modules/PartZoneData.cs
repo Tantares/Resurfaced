@@ -50,8 +50,12 @@ public class PartZoneData : ZoneDataBase
 
   public void Apply(MaterialPropertyBlock mpb)
   {
-    foreach (var renderer in _renderers)
+    MaterialPropertyBlock rendererMPB = new();
+    for (int i = 0; i < _renderers.Count; i++)
     {
+      _renderers[i].GetPropertyBlock(rendererMPB);
+      mpb.SetColor(ShaderPropertyID._EmissiveColor, rendererMPB.GetColor(ShaderPropertyID._EmissiveColor));
+
       mpb.SetColor(ShaderPropertyID._TC1Color, PrimarySwatch.Color);
       mpb.SetFloat(ShaderPropertyID._TC1Metalness, PrimarySwatch.Metalness);
       mpb.SetFloat(ShaderPropertyID._TC1Smoothness, PrimarySwatch.Smoothness);
@@ -64,7 +68,7 @@ public class PartZoneData : ZoneDataBase
       mpb.SetFloat(ShaderPropertyID._TC2SmoothBlend, SecondarySwatch.SmoothBlend);
       mpb.SetFloat(ShaderPropertyID._TC2MetalBlend, SecondarySwatch.MetalBlend);
 
-      renderer.SetPropertyBlock(mpb);
+      _renderers[i].SetPropertyBlock(mpb);
     }
   }
 }
