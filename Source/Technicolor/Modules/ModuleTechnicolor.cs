@@ -90,6 +90,7 @@ public class ModuleTechnicolor : PartModule
       zone.FindTargetRenderers();
       ZoneData[zoneName] = zone;
     }
+    RefreshMPB();
   }
 
   public void LateUpdate()
