@@ -49,4 +49,14 @@ public class EditorData
       if (!found) Zones.Add(zoneData);
     }
   }
+
+  public override string ToString()
+  {
+    string output = "";
+    for (int i = Zones.Count; i-- > 0;)
+    {
+      output += $"{Zones[i].Name}: [1: {Zones[i].PrimarySwatch.Name}, 2: {Zones[i].SecondarySwatch.Name}] ({Zones[i].ActiveInEditor})\n";
+    }
+    return output;
+  }
 }

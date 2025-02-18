@@ -58,14 +58,13 @@ public class ModuleTechnicolor : PartModule
     Initialize([]);
   }
 
-  private void Initialize(ConfigNode[] zoneDataNodes)
+  public void Initialize(ConfigNode[] zoneDataNodes)
   {
     // Initialization may occur either in `OnLoad` or `OnStart`. Initialize only once.
     if (ZoneData.Count > 0) return;
-
+    
     // If there are no config zones, pull them from the prefab.
     ConfigZones ??= part.partInfo.partPrefab.Modules.GetModule<ModuleTechnicolor>().ConfigZones;
-
     var savedZones = zoneDataNodes
       .Select(dataNode => new PartZoneData(this, dataNode))
       .ToDictionary(zone => zone.Name);
@@ -108,6 +107,20 @@ public class ModuleTechnicolor : PartModule
       zone.Save(zoneDataNode);
       node.AddNode(zoneDataNode);
     }
+  }
+  public override void OnWillBeCopied(bool asSymCounterpart)
+  {
+    base.OnWillBeCopied(asSymCounterpart);
+  }
+  public override void OnWasCopied(PartModule copyPartModule, bool asSymCounterpart)
+  {
+    base.OnWasCopied(copyPartModule, asSymCounterpart);
+    EditorData theseSwatches = new();
+    this.GetPartSwatches(ref theseSwatches);
+    ModuleTechnicolor targetModule = (ModuleTechnicolor)copyPartModule;
+
+    targetModule.Initialize([]);
+    targetModule.SetAllSwatches(theseSwatches, false);    
   }
 
   public void SetAllSwatches(EditorData editorData, bool updateCounterparts = true)
