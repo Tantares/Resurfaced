@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Reflection;
 using KSP.Localization;
 using KSP.UI.TooltipTypes;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UniLinq;
 
 namespace Technicolor;
 
@@ -42,9 +44,16 @@ public class TechnicolorEditorModes : MonoBehaviour
 
   private EditorToolsUI editorToolsUI;
 
-  /// I learn things
-  private const ConstructionMode paintConstructionMode = (ConstructionMode)5;
 
+  private bool tweakScalePresent = false;
+  private KFSMEvent on_goToModeScale;
+  private KFSMEvent on_scaleSelect;
+  private KFSMEvent on_scaleDeselect;
+  private KFSMEvent on_scaleReset;
+  private KFSMState st_scale_select;
+  private KFSMState st_scale_tweak;
+
+  private const ConstructionMode paintConstructionMode = (ConstructionMode)5;
   private const ConstructionMode sampleConstructionMode = (ConstructionMode)6;
   private const ConstructionMode fillConstructionMode = (ConstructionMode)7;
 
@@ -68,13 +77,45 @@ public class TechnicolorEditorModes : MonoBehaviour
 
     CreateToolButtons();
 
+    SetupTweakscale();
     GameEvents.onEditorConstructionModeChange.Remove(EditorLogic.fetch.onConstructionModeChanged);
     GameEvents.onEditorConstructionModeChange.Add(onConstructionModeChanged);
 
     AddFSM();
   }
+  private void SetupTweakscale()
+  {
+    foreach (var a in AssemblyLoader.loadedAssemblies)
+    {
+      if (a.name.StartsWith("Scale"))
+      {
+        Utils.Log("[EditorModes]: Tweakscale detected. Doing stupid things.", LogType.Any);
+        tweakScalePresent = true;
+      }
+    }
+    if (tweakScalePresent)
+    {
+      Component someComp = this.GetComponent("ConstructionModeScale");
+      Type someType = someComp.GetType();
 
-  private void CreateToolButtons()
+      FieldInfo pInfo = someType.GetField("on_goToModeScale", BindingFlags.NonPublic | BindingFlags.Instance);
+      on_goToModeScale = (pInfo.GetValue(someComp)) as KFSMEvent;
+      pInfo = someType.GetField("on_scaleSelect", BindingFlags.NonPublic | BindingFlags.Instance);
+      on_scaleSelect = (pInfo.GetValue(someComp)) as KFSMEvent;
+      pInfo = someType.GetField("on_scaleDeselect", BindingFlags.NonPublic | BindingFlags.Instance);
+      on_scaleDeselect = (pInfo.GetValue(someComp)) as KFSMEvent;
+      pInfo = someType.GetField("on_scaleReset", BindingFlags.NonPublic | BindingFlags.Instance);
+      on_scaleReset = (pInfo.GetValue(someComp)) as KFSMEvent;
+
+
+      pInfo = someType.GetField("st_scale_tweak", BindingFlags.NonPublic | BindingFlags.Instance);
+      st_scale_tweak = (pInfo.GetValue(someComp)) as KFSMState;
+      pInfo = someType.GetField("st_scale_select", BindingFlags.NonPublic | BindingFlags.Instance);
+      st_scale_select = (pInfo.GetValue(someComp)) as KFSMState;
+
+    }
+  }
+    private void CreateToolButtons()
   {
     paintButton = AddToolButton(editorToolsUI.rootButton,
                                 "paintButton",
@@ -193,18 +234,36 @@ public class TechnicolorEditorModes : MonoBehaviour
         }
       }
     };
-
-    fsm.AddEvent(on_goToModePaint,
-                 EditorLogic.fetch.st_place,
-                 EditorLogic.fetch.st_idle,
-                 EditorLogic.fetch.st_offset_select,
-                 EditorLogic.fetch.st_offset_tweak,
-                 EditorLogic.fetch.st_rotate_select,
-                 EditorLogic.fetch.st_rotate_tweak,
-                 EditorLogic.fetch.st_root_unselected,
-                 EditorLogic.fetch.st_root_select,
-                 st_sample_select,
-                 st_fill_select);
+    if (tweakScalePresent)
+    {
+      fsm.AddEvent(on_goToModePaint,
+                  EditorLogic.fetch.st_place,
+                  EditorLogic.fetch.st_idle,
+                  EditorLogic.fetch.st_offset_select,
+                  EditorLogic.fetch.st_offset_tweak,
+                  EditorLogic.fetch.st_rotate_select,
+                  EditorLogic.fetch.st_rotate_tweak,
+                  EditorLogic.fetch.st_root_unselected,
+                  EditorLogic.fetch.st_root_select,
+                  st_sample_select,
+                  st_fill_select,
+                  st_scale_select,
+                  st_scale_tweak);
+    }
+    else
+    {
+      fsm.AddEvent(on_goToModePaint,
+                   EditorLogic.fetch.st_place,
+                   EditorLogic.fetch.st_idle,
+                   EditorLogic.fetch.st_offset_select,
+                   EditorLogic.fetch.st_offset_tweak,
+                   EditorLogic.fetch.st_rotate_select,
+                   EditorLogic.fetch.st_rotate_tweak,
+                   EditorLogic.fetch.st_root_unselected,
+                   EditorLogic.fetch.st_root_select,
+                   st_sample_select,
+                   st_fill_select);
+    }
     on_paintApply = new("on_paintApply")
     {
       updateMode = KFSMUpdateMode.UPDATE,
@@ -259,7 +318,24 @@ public class TechnicolorEditorModes : MonoBehaviour
         on_goToModeSample.GoToStateOnEvent = st_sample_select;
       }
     };
-    fsm.AddEvent(on_goToModeSample,
+    if (tweakScalePresent)
+    {
+      fsm.AddEvent(on_goToModeSample,
+                   EditorLogic.fetch.st_idle,
+                   EditorLogic.fetch.st_offset_select,
+                   EditorLogic.fetch.st_offset_tweak,
+                   EditorLogic.fetch.st_rotate_select,
+                   EditorLogic.fetch.st_rotate_tweak,
+                   EditorLogic.fetch.st_root_unselected,
+                   EditorLogic.fetch.st_root_select,
+                   st_paint_select,
+                   st_fill_select,
+                   st_scale_select,
+                   st_scale_tweak);
+    }
+    else
+    {
+      fsm.AddEvent(on_goToModeSample,
                  EditorLogic.fetch.st_idle,
                  EditorLogic.fetch.st_offset_select,
                  EditorLogic.fetch.st_offset_tweak,
@@ -269,7 +345,8 @@ public class TechnicolorEditorModes : MonoBehaviour
                  EditorLogic.fetch.st_root_select,
                  st_paint_select,
                  st_fill_select);
-    ;
+      
+    }
 
     on_sampleApply = new("on_sampleApply")
     {
@@ -323,17 +400,35 @@ public class TechnicolorEditorModes : MonoBehaviour
         on_goToModeFill.GoToStateOnEvent = st_fill_select;
       }
     };
-    fsm.AddEvent(on_goToModeFill,
-                 EditorLogic.fetch.st_idle,
-                 EditorLogic.fetch.st_offset_select,
-                 EditorLogic.fetch.st_offset_tweak,
-                 EditorLogic.fetch.st_rotate_select,
-                 EditorLogic.fetch.st_rotate_tweak,
-                 EditorLogic.fetch.st_root_unselected,
-                 EditorLogic.fetch.st_root_select,
-                 st_paint_select,
-                 st_sample_select);
-    ;
+    if (tweakScalePresent)
+    {
+      fsm.AddEvent(on_goToModeFill,
+                   EditorLogic.fetch.st_idle,
+                   EditorLogic.fetch.st_offset_select,
+                   EditorLogic.fetch.st_offset_tweak,
+                   EditorLogic.fetch.st_rotate_select,
+                   EditorLogic.fetch.st_rotate_tweak,
+                   EditorLogic.fetch.st_root_unselected,
+                   EditorLogic.fetch.st_root_select,
+                   st_paint_select,
+                   st_sample_select,
+                   st_scale_select,
+                   st_scale_tweak);
+    }
+    else
+    {
+      fsm.AddEvent(on_goToModeFill,
+                   EditorLogic.fetch.st_idle,
+                   EditorLogic.fetch.st_offset_select,
+                   EditorLogic.fetch.st_offset_tweak,
+                   EditorLogic.fetch.st_rotate_select,
+                   EditorLogic.fetch.st_rotate_tweak,
+                   EditorLogic.fetch.st_root_unselected,
+                   EditorLogic.fetch.st_root_select,
+                   st_paint_select,
+                   st_sample_select);
+    }
+    
 
     on_fillApply = new("on_fillApply")
     {
@@ -407,11 +502,28 @@ public class TechnicolorEditorModes : MonoBehaviour
                  st_paint_select,
                  st_sample_select,
                  st_fill_select);
-    fsm.AddEvent(EditorLogic.fetch.on_newShip, st_paint_select, st_sample_select, st_fill_select);
+    fsm.AddEvent(EditorLogic.fetch.on_newShip,
+                 st_paint_select,
+                 st_sample_select,
+                 st_fill_select);
     fsm.AddEvent(EditorLogic.fetch.on_shipLoaded,
                  st_paint_select,
                  st_sample_select,
                  st_fill_select);
+    if (tweakScalePresent)
+    {
+      fsm.AddEvent(on_goToModeScale,
+        EditorLogic.fetch.st_idle,
+        EditorLogic.fetch.st_offset_select,
+        EditorLogic.fetch.st_offset_tweak,
+        EditorLogic.fetch.st_rotate_select,
+        EditorLogic.fetch.st_rotate_tweak,
+        EditorLogic.fetch.st_root_unselected,
+        EditorLogic.fetch.st_root_select,
+                 st_paint_select,
+                 st_sample_select,
+                 st_fill_select);
+    }
   }
 
   private void AddFSM()
@@ -476,8 +588,17 @@ public class TechnicolorEditorModes : MonoBehaviour
       EditorLogic.fetch.fsm.RunEvent(on_goToModeFill);
       EditorLogic.fetch.constructionMode = mode;
     }
+    else if (tweakScalePresent && mode == (ConstructionMode)4)
+    {
+      EditorLogic.fetch.coordSpaceBtn.gameObject.SetActive(value: false);
+      EditorLogic.fetch.radialSymmetryBtn.gameObject.SetActive(value: false);
+
+      EditorLogic.fetch.fsm.RunEvent(on_goToModeScale);
+      EditorLogic.fetch.constructionMode = mode;
+    }
     else
     {
+
       EditorLogic.fetch.onConstructionModeChanged(mode);
     }
   }
