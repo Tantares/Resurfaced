@@ -53,6 +53,6 @@ public class UILibrarySwatch : MonoBehaviour
   protected void GenerateSwatchVisual()
   {
     _swatch.GenerateThumbnail();
-    _image.sprite = Swatch.Thumbnail;
+    _image.sprite = Swatch.ThumbnailLeft;
   }
 }
