@@ -298,6 +298,7 @@ public class TechnicolorEditorModes : MonoBehaviour
             else
             {
               TechnicolorEditorLogic.PaintPart(module);
+              on_goToModePaint.OnEvent();
               return false;
             }
           }
