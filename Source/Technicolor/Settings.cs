@@ -20,6 +20,7 @@ public static class Settings
   public static KeyCode TogglePaletteKey = KeyCode.Alpha9;
 
   public static int SwatchRenderResolution = 64;
+  public static float SwatchLibraryScrollRate = 20f;
 
   public static string DefaultZoneName = "main";
   public static string DefaultPrimarySwatch = "porkjetWhite";
@@ -58,6 +59,8 @@ public static class Settings
       settingsNode.TryGetEnum<KeyCode>("SampleModeKey", ref SampleModeKey, KeyCode.Alpha5);
       settingsNode.TryGetEnum<KeyCode>("FillModeKey", ref FillModeKey, KeyCode.Alpha5);
       settingsNode.TryGetEnum<KeyCode>("TogglePaletteKey", ref TogglePaletteKey, KeyCode.Alpha5);
+
+      settingsNode.TryGetValue("SwatchLibraryScrollRate", ref SwatchLibraryScrollRate);
 
       settingsNode.TryGetValue("SwatchRenderResolution", ref SwatchRenderResolution);
     }

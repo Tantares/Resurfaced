@@ -64,6 +64,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
   public void Start()
   {
     _panelTitle.text = Localizer.Format("#LOC_Technicolor_UI_MaterialWindow_Title");
+    _libraryScrollRect.scrollSensitivity = Settings.SwatchLibraryScrollRate;
     _zoneWidgets = new();
 
     foreach (var zoneData in TechnicolorEditorLogic.EditorData.Zones)
