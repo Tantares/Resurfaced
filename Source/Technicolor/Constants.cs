@@ -21,8 +21,13 @@ public static class Constants
 
   public const string MODULE_COLOR_NODE = "COLORZONE";
   public const string MODULE_COLOR_DATA_NODE = "COLORZONE_DATA";
+  public const string MODULE_FAIRING_NODE = "FAIRING_TEXTURES";
 
   public const string TEAMCOLOR_SHADER_NAME = "Resurfaced/Standard (TC)";
+  public const string TEAMCOLOR_FAIRING_SHADER_NAME = "Resurfaced/Fairing (TC)";
+  public const string TEAMCOLOR_FAIRING_EDITOR_SHADER_NAME = "Resurfaced/Fairing Editor (TC)";
+
+  public const string FAIRING_ZONE_NAME = "shrouds";
 }
 
 public static class ShaderPropertyID

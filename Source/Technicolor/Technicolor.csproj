@@ -59,6 +59,7 @@
     <Compile Include="Library\SwatchGroup.cs" />
     <Compile Include="Editor\EditorZoneData.cs" />
     <Compile Include="Modules\PartZoneData.cs" />
+    <Compile Include="Modules\ProceduralFairingConfig.cs" />
     <Compile Include="UI\EditorRollover.cs" />
     <Compile Include="Editor\TechnicolorEditorModes.cs" />
     <Compile Include="Editor\EditorData.cs" />

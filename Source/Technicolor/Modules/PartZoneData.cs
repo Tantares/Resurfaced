@@ -9,7 +9,7 @@ public class PartZoneData : ZoneDataBase
   private Part _part => _module.part;
   private ColorZone _configZone => _module.ConfigZones[Name];
 
-  private readonly List<Renderer> _renderers = [];
+  private List<Renderer> _renderers = [];
 
   public PartZoneData(ModuleTechnicolor module, string name)
   {
@@ -46,6 +46,10 @@ public class PartZoneData : ZoneDataBase
       if (blanket || _configZone.Transforms.Contains(renderer.transform.name))
         _renderers.Add(renderer);
     }
+  }
+  public void SetTargetRenderers(List<Renderer> renderers)
+  {
+    _renderers = renderers;
   }
 
   public void Apply(MaterialPropertyBlock mpb)
