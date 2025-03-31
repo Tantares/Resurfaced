@@ -382,7 +382,7 @@ public class TechnicolorEditorModes : MonoBehaviour
             {
               TechnicolorEditorLogic.GetSwatchesFromPart(module);
             }
-            on_goToModePaint.OnEvent();
+            on_goToModeSample.OnEvent();
 
             return false;
           }
@@ -469,6 +469,7 @@ public class TechnicolorEditorModes : MonoBehaviour
               }
             }
 
+            on_goToModeFill.OnEvent();
             return false;
           }
         }
