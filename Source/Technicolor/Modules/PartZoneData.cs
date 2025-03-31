@@ -57,22 +57,25 @@ public class PartZoneData : ZoneDataBase
     MaterialPropertyBlock rendererMPB = new();
     for (int i = 0; i < _renderers.Count; i++)
     {
-      _renderers[i].GetPropertyBlock(rendererMPB);
-      mpb.SetColor(ShaderPropertyID._EmissiveColor, rendererMPB.GetColor(ShaderPropertyID._EmissiveColor));
+      if (_renderers[i] != null)
+      {
+        _renderers[i].GetPropertyBlock(rendererMPB);
+        mpb.SetColor(ShaderPropertyID._EmissiveColor, rendererMPB.GetColor(ShaderPropertyID._EmissiveColor));
 
-      mpb.SetColor(ShaderPropertyID._TC1Color, PrimarySwatch.Color);
-      mpb.SetFloat(ShaderPropertyID._TC1Metalness, PrimarySwatch.Metalness);
-      mpb.SetFloat(ShaderPropertyID._TC1Smoothness, PrimarySwatch.Smoothness);
-      mpb.SetFloat(ShaderPropertyID._TC1SmoothBlend, PrimarySwatch.SmoothBlend);
-      mpb.SetFloat(ShaderPropertyID._TC1MetalBlend, PrimarySwatch.MetalBlend);
+        mpb.SetColor(ShaderPropertyID._TC1Color, PrimarySwatch.Color);
+        mpb.SetFloat(ShaderPropertyID._TC1Metalness, PrimarySwatch.Metalness);
+        mpb.SetFloat(ShaderPropertyID._TC1Smoothness, PrimarySwatch.Smoothness);
+        mpb.SetFloat(ShaderPropertyID._TC1SmoothBlend, PrimarySwatch.SmoothBlend);
+        mpb.SetFloat(ShaderPropertyID._TC1MetalBlend, PrimarySwatch.MetalBlend);
 
-      mpb.SetColor(ShaderPropertyID._TC2Color, SecondarySwatch.Color);
-      mpb.SetFloat(ShaderPropertyID._TC2Metalness, SecondarySwatch.Metalness);
-      mpb.SetFloat(ShaderPropertyID._TC2Smoothness, SecondarySwatch.Smoothness);
-      mpb.SetFloat(ShaderPropertyID._TC2SmoothBlend, SecondarySwatch.SmoothBlend);
-      mpb.SetFloat(ShaderPropertyID._TC2MetalBlend, SecondarySwatch.MetalBlend);
+        mpb.SetColor(ShaderPropertyID._TC2Color, SecondarySwatch.Color);
+        mpb.SetFloat(ShaderPropertyID._TC2Metalness, SecondarySwatch.Metalness);
+        mpb.SetFloat(ShaderPropertyID._TC2Smoothness, SecondarySwatch.Smoothness);
+        mpb.SetFloat(ShaderPropertyID._TC2SmoothBlend, SecondarySwatch.SmoothBlend);
+        mpb.SetFloat(ShaderPropertyID._TC2MetalBlend, SecondarySwatch.MetalBlend);
 
-      _renderers[i].SetPropertyBlock(mpb);
+        _renderers[i].SetPropertyBlock(mpb);
+      }
     }
   }
 }

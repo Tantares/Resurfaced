@@ -30,7 +30,6 @@ public class TechnicolorEditorLogic : ScenarioModule
   public void Start()
   {
     EditorLogic.fetch.toolsUI.gameObject.AddComponent<TechnicolorEditorModes>();
-    GameEvents.onVariantApplied.Add(OnPartVariantApplied);
 
     Rollover = gameObject.AddComponent<TechnicolorEditorRollover>();
   }
@@ -49,8 +48,7 @@ public class TechnicolorEditorLogic : ScenarioModule
   public void OnDestroy()
   {
     Instance = null;
-    GameEvents.onVariantApplied.Remove(OnPartVariantApplied);
-    Destroy(Rollover);
+    Rollover.OnDestroy();
   }
 
   public static void GetSwatchesFromPart(ModuleTechnicolor module)
@@ -66,17 +64,4 @@ public class TechnicolorEditorLogic : ScenarioModule
     module.SetAllSwatches(EditorData);
   }
 
-  /// <summary>
-  /// This function exists purely to deal with ModulePartVariants resetting materials when variants change
-  /// </summary>
-  /// <param name="part"></param>
-  /// <param name="partVariant"></param>
-  public void OnPartVariantApplied(Part part, PartVariant partVariant)
-  {
-    if (part == null) return;
-    var module = part.GetComponent<ModuleTechnicolor>();
-    if (module == null) return;
-    //module.ApplySwatches();
-    Utils.Log($"[TechnicolorEditorLogic] Painting part", LogType.Editor);
-  }
 }

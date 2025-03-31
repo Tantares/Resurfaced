@@ -99,4 +99,10 @@ public class TechnicolorEditorRollover : MonoBehaviour
 
     return canvas.transform.TransformPoint(position) + new Vector3(10f, -10f);
   }
+
+  public void OnDestroy()
+  {
+    if (widget != null)
+      GameObject.Destroy(widget);
+  }
 }

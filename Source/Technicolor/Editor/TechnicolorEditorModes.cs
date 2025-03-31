@@ -297,6 +297,7 @@ public class TechnicolorEditorModes : MonoBehaviour
             }
             else
             {
+              EditorLogic.fetch.SetBackup();
               TechnicolorEditorLogic.PaintPart(module);
               on_goToModePaint.OnEvent();
               return false;
@@ -381,6 +382,7 @@ public class TechnicolorEditorModes : MonoBehaviour
             {
               TechnicolorEditorLogic.GetSwatchesFromPart(module);
             }
+            on_goToModePaint.OnEvent();
 
             return false;
           }
@@ -449,6 +451,8 @@ public class TechnicolorEditorModes : MonoBehaviour
               EditorLogic.fetch.on_partPicked.OnEvent();
               return false;
             }
+
+            EditorLogic.fetch.SetBackup();
 
             var module = toPaint.FindModuleImplementing<ModuleTechnicolor>();
             if (module != null)

@@ -39,7 +39,6 @@ public class TechnicolorUI : MonoBehaviour
     newUIPanel.transform.localScale = Vector3.one;
     newUIPanel.transform.position = EditorLogic.fetch.toolsUI.rootButton.transform.position
                                   + new Vector3(200, 0, 0f);
-    ;
 
     MaterialWindow = newUIPanel.AddComponent<UIMaterialPaintWindow>();
     MaterialWindow.SetVisible(false);
