@@ -34,6 +34,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
 
   protected Button _zoneAddButton;
   protected Dropdown _zoneDropdown;
+  protected ScrollRect _zoneScrollRect;
 
   protected List<UILibrarySwatchGroup> _swatchLibraryGroups;
   protected List<UISwatchZoneWidget> _zoneWidgets = new();
@@ -53,6 +54,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
 
     _zoneDropdown = UIUtils.FindChildOfType<Dropdown>("ZoneDropdown", transform);
     _zoneAddButton = UIUtils.FindChildOfType<Button>("ZoneAddButton", transform);
+    _zoneScrollRect = UIUtils.FindChildOfType<ScrollRect>("Template", transform);
 
     _zonesBase = transform.FindDeepChild("SwatchSelection");
     SwatchButtonGroup = gameObject.AddComponent<ToggleGroup>();
@@ -65,6 +67,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
   {
     _panelTitle.text = Localizer.Format("#LOC_Technicolor_UI_MaterialWindow_Title");
     _libraryScrollRect.scrollSensitivity = Settings.SwatchLibraryScrollRate;
+    _zoneScrollRect.scrollSensitivity = Settings.SwatchLibraryScrollRate;
     _zoneWidgets = new();
 
     foreach (var zoneData in TechnicolorEditorLogic.EditorData.Zones)
@@ -81,7 +84,6 @@ public class UIMaterialPaintWindow : MonoBehaviour
     }
 
     ResetEditorUISwatches();
-    //_zoneAddButton.onClick.AddListener(delegate { OnAddZone(); });
     _zoneDropdown.AddOptions(TechnicolorEditorLogic.EditorData.Zones.Select(x => x.DisplayName)
                                .ToList());
     _zoneDropdown.onValueChanged.AddListener(delegate { OnAddZone(); });
@@ -264,7 +266,17 @@ public class UIMaterialPaintWindow : MonoBehaviour
           if (zoneData.ActiveInEditor)
           {
             widget.OnSelectSwatch(zoneData.PrimarySwatch, zoneData.SecondarySwatch);
-          }
+            if (LibraryShown)
+            {
+              foreach (var group in _swatchLibraryGroups)
+              {
+                if (_currentSlotType == SwatchSlot.Primary)
+                  group.HighlightSwatch(zoneData.PrimarySwatch);
+                else
+                  group.HighlightSwatch(zoneData.SecondarySwatch);
+              }
+            }
+          }          
         }
       }
     }
