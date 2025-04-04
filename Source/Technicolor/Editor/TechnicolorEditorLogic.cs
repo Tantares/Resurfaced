@@ -6,7 +6,7 @@ public class TechnicolorEditorLogic : ScenarioModule
   public static TechnicolorEditorLogic Instance;
 
   public static EditorData EditorData;
-  public TechnicolorEditorRollover Rollover;
+  public EditorRollover Rollover;
 
   public override void OnAwake()
   {
@@ -31,7 +31,7 @@ public class TechnicolorEditorLogic : ScenarioModule
   {
     EditorLogic.fetch.toolsUI.gameObject.AddComponent<TechnicolorEditorModes>();
 
-    Rollover = gameObject.AddComponent<TechnicolorEditorRollover>();
+    Rollover = gameObject.AddComponent<EditorRollover>();
   }
 
   public override void OnSave(ConfigNode node)
@@ -49,6 +49,8 @@ public class TechnicolorEditorLogic : ScenarioModule
   {
     Instance = null;
     Rollover.OnDestroy();
+
+    Destroy(Rollover);
   }
 
   public static void GetSwatchesFromPart(ModuleTechnicolor module)

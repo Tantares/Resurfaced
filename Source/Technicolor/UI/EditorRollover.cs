@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Technicolor;
 
-public class TechnicolorEditorRollover : MonoBehaviour
+public class EditorRollover : MonoBehaviour
 {
   public bool Visible { get; private set; }
   protected GameObject widget;
@@ -83,7 +83,7 @@ public class TechnicolorEditorRollover : MonoBehaviour
   protected void SetVisibility(bool state)
   {
     Visible = state;
-    if (widget.activeSelf != state)
+    if (widget != null && widget.activeSelf != state)
     {
       widget.SetActive(state);
     }
