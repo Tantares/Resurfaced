@@ -193,7 +193,8 @@ public class TechnicolorEditorModes : MonoBehaviour
     st_paint_select = new("st_paint_select")
     {
       OnUpdate = Combine(EditorLogic.fetch.UndoRedoInputUpdate,
-                         EditorLogic.fetch.partSearchUpdate)
+                         EditorLogic.fetch.partSearchUpdate
+                         )
     };
     fsm.AddState(st_paint_select);
     st_sample_select = new("st_sample_select")
@@ -218,6 +219,7 @@ public class TechnicolorEditorModes : MonoBehaviour
       updateMode = KFSMUpdateMode.MANUAL_TRIGGER,
       OnEvent = delegate
       {
+
         if (EditorLogic.fetch.selectedPart == null)
         {
           ScreenMessages.PostScreenMessage(PAINT_ENTER_MESSAGE, EditorLogic.fetch.modeMsg);
@@ -234,6 +236,7 @@ public class TechnicolorEditorModes : MonoBehaviour
         }
       }
     };
+    
     if (tweakScalePresent)
     {
       fsm.AddEvent(on_goToModePaint,
@@ -299,6 +302,8 @@ public class TechnicolorEditorModes : MonoBehaviour
             {
               EditorLogic.fetch.SetBackup();
               TechnicolorEditorLogic.PaintPart(module);
+              selectedPart = null;
+              //on_paintApply.GoToStateOnEvent = st_paint_select;
               on_goToModePaint.OnEvent();
               return false;
             }
