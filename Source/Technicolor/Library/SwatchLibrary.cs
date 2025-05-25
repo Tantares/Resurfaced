@@ -76,18 +76,54 @@ public static class SwatchLibrary
     Utils.Log($"[SwatchLibrary] Loaded {SwatchGroups.Count} Swatch Groups", LogType.Loading);
   }
 
+
   public class TechnicolorSwatchComparer : IComparer<Swatch>
   {
+    public float[] groupedHues = new float[] { 13/360f, 37/360f, 66/360f, 140/360f, 178/360f, 264/360f, 329/360f};
+
     public int Compare(Swatch x, Swatch y)
     {
-      Color.RGBToHSV(x.Color, out float h1, out float _, out float _);
-      Color.RGBToHSV(y.Color, out float h2, out float _, out float _);
+      Color.RGBToHSV(x.Color, out float h1, out float s1, out float v1);
+      Color.RGBToHSV(y.Color, out float h2, out float s2, out float v2);
 
+      // compare smoothnesses, if different, use this
       int compareSmooth = x.Smoothness.CompareTo(y.Smoothness);
       if (compareSmooth != 0) return compareSmooth;
 
-      int compareHue = h1.CompareTo(h2);
-      return compareHue;
+      // if saturation is low, compare values
+      if (s1 == 0f || s2 == 0f)
+        return v1.CompareTo(v2);
+
+      // Else do a fancy hue/value thing
+      // Bin hues for comparison
+      int hueBin1 = 0;
+      int huebin2 = 0;
+      for (int i = 0; i < groupedHues.Length; i++)
+      {
+        if (h1 <= groupedHues[i])
+        {
+          hueBin1 = i;
+          break;
+        }
+      }
+      ///  // Intense : H:X, S:80 , V:100, 
+      // Dark    : H:X, S:80: , V:35, 
+      // Medium  : H:X, S:75: , V:85, 
+      for (int i = 0; i < groupedHues.Length; i++)
+      {
+        if (h2 <= groupedHues[i])
+        {
+          huebin2 = i;
+          break;
+        }
+      }
+
+      int compareHueBin = hueBin1.CompareTo(huebin2);
+
+      if (compareHueBin != 0) return compareHueBin;
+
+      int compareValue = v1.CompareTo(v2);
+      return compareValue;
     }
   }
 }

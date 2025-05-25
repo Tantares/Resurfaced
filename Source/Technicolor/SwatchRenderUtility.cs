@@ -13,7 +13,7 @@ public static class SwatchRenderUtility
   internal static readonly float CAM_FOV = 25f;
 
   internal static readonly int RENDER_LAYER = 8;
-  internal static readonly float LIGHT_INTENSITY = 0.05f;
+  internal static readonly float LIGHT_INTENSITY = 0.01f;
   internal static readonly float LIGHT_DIST = 10f;
   internal static readonly float LIGHT_ELEV_OFFSET = 65f;
   internal static readonly float LIGHT_AZ_OFFSET = 45f;

@@ -52,6 +52,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="ColorUtils.cs" />
     <Compile Include="Editor\ZoneDataBase.cs" />
     <Compile Include="Harmony\EditorPartIcon.cs" />
     <Compile Include="Harmony\Patcher.cs" />
