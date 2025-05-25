@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props" Condition="Exists('packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" />
+  <PropertyGroup>
+    <RepoRootPath>$(MSBuildThisFileDirectory)../..</RepoRootPath>
+    <BinariesOutputRelativePath>GameData/Technicolor/Plugins</BinariesOutputRelativePath>
+  </PropertyGroup>
+  <!-- allow KSPBuildTools to use ReferencePath before Microsoft.CSharp.targets is imported -->
+  <Import Project="$(MSBuildThisFile).user" Condition="Exists('$(MSBuildThisFile).user')" />
+  <Import Project="packages\KSPBuildTools.0.0.1\build\KSPBuildTools.props" Condition="Exists('packages\KSPBuildTools.0.0.1\build\KSPBuildTools.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{218A5CC9-5001-4298-B9A6-405A2A22BDA3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Technicolor</RootNamespace>
+    <AssemblyName>Technicolor</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <LangVersion>preview</LangVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="ColorUtils.cs" />
+    <Compile Include="Editor\ZoneDataBase.cs" />
+    <Compile Include="Harmony\EditorPartIcon.cs" />
+    <Compile Include="Harmony\Patcher.cs" />
+    <Compile Include="Library\EditorColorZone.cs" />
+    <Compile Include="Library\SwatchGroup.cs" />
+    <Compile Include="Editor\EditorZoneData.cs" />
+    <Compile Include="Modules\PartZoneData.cs" />
+    <Compile Include="Modules\ProceduralFairingConfig.cs" />
+    <Compile Include="UI\EditorRollover.cs" />
+    <Compile Include="Editor\TechnicolorEditorModes.cs" />
+    <Compile Include="Editor\EditorData.cs" />
+    <Compile Include="MaterialUtils.cs" />
+    <Compile Include="Modules\ColorZone.cs" />
+    <Compile Include="Modules\ModuleTechnicolor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SkyCapture.cs" />
+    <Compile Include="UI\UIEditorRolloverPanel.cs" />
+    <Compile Include="UI\UISwatchZoneWidget.cs" />
+    <Compile Include="Library\ZoneLibrary.cs" />
+    <Compile Include="Library\SwatchLibrary.cs" />
+    <Compile Include="SwatchRenderUtility.cs" />
+    <Compile Include="TechnicolorAssets.cs" />
+    <Compile Include="Library\Swatch.cs" />
+    <Compile Include="UIUtils.cs" />
+    <Compile Include="UI\DraggableWindow.cs" />
+    <Compile Include="Editor\TechnicolorEditorLogic.cs" />
+    <Compile Include="UI\Tooltips.cs" />
+    <Compile Include="UI\UIMaterialPaintWindow.cs" />
+    <Compile Include="UI\TechnicolorUI.cs" />
+    <Compile Include="UI\UISwatchSlotButton.cs" />
+    <Compile Include="UI\UILibrarySwatch.cs" />
+    <Compile Include="UI\UILibrarySwatchGroup.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="Library\TechnicolorLoader.cs" />
+    <Compile Include="Constants.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Publicize Include="Assembly-CSharp" IncludeCompilerGeneratedMembers="false" />
+    <!-- note the IncludeCompilerGeneratedMembers is only in krafs 2, so it has no effect here.  but leaving it just in case we upgrade later -->
+    <DoNotPublicize Include="Assembly-CSharp:BaseField`1.OnValueModified" />
+    <Publicize Include="UnityEngine.UI" />
+  </ItemGroup>
+  <PropertyGroup>
+    <PublicizerClearCacheOnClean>true</PublicizerClearCacheOnClean>
+    <PublicizeAsReferenceAssemblies>false</PublicizeAsReferenceAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>lib\0Harmony.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them. For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\KSPBuildTools.0.0.1\build\KSPBuildTools.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\KSPBuildTools.0.0.1\build\KSPBuildTools.props'))" />
+    <Error Condition="!Exists('packages\KSPBuildTools.0.0.1\build\KSPBuildTools.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\KSPBuildTools.0.0.1\build\KSPBuildTools.targets'))" />
+    <Error Condition="!Exists('packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props'))" />
+    <Error Condition="!Exists('packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets'))" />
+  </Target>
+  <Import Project="packages\KSPBuildTools.0.0.1\build\KSPBuildTools.targets" Condition="Exists('packages\KSPBuildTools.0.0.1\build\KSPBuildTools.targets')" />
+  <Import Project="packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets" Condition="Exists('packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+           Other similar extension points exist, see Microsoft.Common.targets.
+      <Target Name="BeforeBuild">
+      </Target>
+      <Target Name="AfterBuild">
+      </Target>
+      -->
+</Project>
