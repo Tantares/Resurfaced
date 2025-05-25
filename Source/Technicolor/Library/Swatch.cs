@@ -11,7 +11,7 @@ public class Swatch
   [Persistent(name = "DisplayName")] private readonly string _displayName;
   public readonly string DisplayName;
   [Persistent] public readonly string Group = "internal";
-  [Persistent] public readonly Color Color = Color.white;
+  public readonly Color Color = Color.white;
   [Persistent] public readonly float Metalness = 0f;
   [Persistent] public readonly float Smoothness = 0.2f;
   [Persistent] public readonly float MetalBlend = 1f;
@@ -27,6 +27,7 @@ public class Swatch
   {
     ConfigNode.LoadObjectFromConfig(this, node);
     DisplayName = Localizer.Format(_displayName ?? Name);
+    Color = ParsedMultiColor.Parse(node.GetValue("Color"));
   }
 
   public void GenerateThumbnail()
