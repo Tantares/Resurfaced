@@ -85,14 +85,23 @@ public class TechnicolorEditorModes : MonoBehaviour
   }
   private void SetupTweakscale()
   {
-    foreach (var a in AssemblyLoader.loadedAssemblies)
+
+    if (AssemblyLoader.loadedAssemblies.Any(a => a.name.Equals("Scale", StringComparison.OrdinalIgnoreCase)))
     {
-      if (a.name.StartsWith("Scale"))
+      if (AssemblyLoader.loadedAssemblies.Any(a => a.name.Equals("TweakScale.WatchDog", StringComparison.OrdinalIgnoreCase)))
       {
-        Utils.Log("[EditorModes]: Tweakscale detected. Doing stupid things.", LogType.Any);
+
+        Utils.Log("[EditorModes]: TweakScale/L detected. Please install a supported tweakscale version", LogType.Any);
+        tweakScalePresent = false;
+      }
+      else
+      {
+
+        Utils.Log("[EditorModes]: TweakScale/R detected. Doing stupid things.", LogType.Any);
         tweakScalePresent = true;
       }
     }
+
     if (tweakScalePresent)
     {
       Component someComp = this.GetComponent("ConstructionModeScale");
@@ -115,7 +124,7 @@ public class TechnicolorEditorModes : MonoBehaviour
 
     }
   }
-    private void CreateToolButtons()
+  private void CreateToolButtons()
   {
     paintButton = AddToolButton(editorToolsUI.rootButton,
                                 "paintButton",
@@ -236,7 +245,7 @@ public class TechnicolorEditorModes : MonoBehaviour
         }
       }
     };
-    
+
     if (tweakScalePresent)
     {
       fsm.AddEvent(on_goToModePaint,
@@ -352,7 +361,7 @@ public class TechnicolorEditorModes : MonoBehaviour
                  EditorLogic.fetch.st_root_select,
                  st_paint_select,
                  st_fill_select);
-      
+
     }
 
     on_sampleApply = new("on_sampleApply")
@@ -436,7 +445,7 @@ public class TechnicolorEditorModes : MonoBehaviour
                    st_paint_select,
                    st_sample_select);
     }
-    
+
 
     on_fillApply = new("on_fillApply")
     {
