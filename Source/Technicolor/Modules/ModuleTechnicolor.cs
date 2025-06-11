@@ -25,9 +25,9 @@ public class ModuleTechnicolor : PartModule
   /// </summary>
   public ProceduralFairingConfig FairingConfig;
 
-
   /// Fairing material replacement
   private ModuleProceduralFairing fairingModule;
+
   private Material fairingMaterial;
   private Material fairingFlightMaterial;
   private Material fairingConeMaterial;
@@ -84,7 +84,7 @@ public class ModuleTechnicolor : PartModule
     base.OnStart(state);
     Initialize([]);
 
-    /// Various special case handling for ModuleProceduralFairing
+    // Various special case handling for ModuleProceduralFairing
     StartCoroutine(DelaySetupFairingMaterials());
   }
 
@@ -100,28 +100,29 @@ public class ModuleTechnicolor : PartModule
     {
       yield break;
     }
+
     fairingModule = part.FindModuleImplementing<ModuleProceduralFairing>();
     if (fairingModule == null)
     {
       yield break;
     }
 
-    /// For reference, stock shaders :
-    /// editor: KSP/Bumped Specular (cutoff)
-    /// flight: KSP/Bumped Specular Opaque (cutoff)
+    // For reference, stock shaders :
+    // editor: KSP/Bumped Specular (cutoff)
+    // flight: KSP/Bumped Specular Opaque (cutoff)
 
-    /// Create the new fairing materials and replace them on the module
+    // Create the new fairing materials and replace them on the module
     CreateFairingMaterials();
     fairingModule.FairingMaterial = fairingMaterial;
     fairingModule.FairingConeMaterial = fairingConeMaterial;
     fairingModule.FairingFlightMaterial = fairingFlightMaterial;
     fairingModule.FairingFlightConeMaterial = fairingFlightConeMaterial;
 
-    /// Replace existing panel materials
+    // Replace existing panel materials
     List<Renderer> panelRenderers = new();
-    foreach (ProceduralFairings.FairingPanel fairingPanel in fairingModule.Panels)
+    foreach (var fairingPanel in fairingModule.Panels)
     {
-      MeshRenderer mr = fairingPanel.go.GetComponent<MeshRenderer>();
+      var mr = fairingPanel.go.GetComponent<MeshRenderer>();
       if (HighLogic.LoadedSceneIsEditor)
       {
         mr.material = fairingPanel.isCap ? fairingConeMaterial : fairingMaterial;
@@ -130,34 +131,38 @@ public class ModuleTechnicolor : PartModule
       {
         mr.material = fairingPanel.isCap ? fairingFlightConeMaterial : fairingFlightMaterial;
       }
+
       panelRenderers.Add(mr);
     }
 
-    /// Check to see if a special config zone exists, if it doesn't we should create it
+    // Check to see if a special config zone exists, if it doesn't we should create it
     string zoneName = Constants.FAIRING_ZONE_NAME;
     if (!ZoneData.TryGetValue(zoneName, out var zone))
     {
       zone = new(this, zoneName);
 
-      /// Respect the editor's auto-apply option 
+      // Respect the editor's auto-apply option
       if (HighLogic.LoadedSceneIsEditor)
       {
         var editorZoneData = TechnicolorEditorLogic.EditorData.GetZone(zoneName);
         if (editorZoneData.AutoApply) zone.SetSwatches(editorZoneData);
       }
+
       ZoneData[zoneName] = zone;
     }
+
     if (ZoneData.TryGetValue(zoneName, out zone))
     {
       zone.SetTargetRenderers(panelRenderers);
     }
-    /// Need to hook the module up to onEditorShipModified, which gets fired when the user edits the fairing
+
+    // Need to hook the module up to onEditorShipModified, which gets fired when the user edits the fairing
     if (HighLogic.LoadedSceneIsEditor)
     {
-      GameEvents.onEditorShipModified.Add(new EventData<ShipConstruct>.OnEvent(onEditorShipModified));
+      GameEvents.onEditorShipModified.Add(new(onEditorShipModified));
     }
 
-    RefreshMPB();
+    RefreshMaterialProps();
   }
 
   /// <summary>
@@ -169,9 +174,9 @@ public class ModuleTechnicolor : PartModule
       return;
 
     List<Renderer> panelRenderers = new();
-    foreach (ProceduralFairings.FairingPanel fairingPanel in fairingModule.Panels)
+    foreach (var fairingPanel in fairingModule.Panels)
     {
-      MeshRenderer mr = fairingPanel.go.GetComponent<MeshRenderer>();
+      var mr = fairingPanel.go.GetComponent<MeshRenderer>();
       panelRenderers.Add(mr);
     }
 
@@ -180,7 +185,8 @@ public class ModuleTechnicolor : PartModule
     {
       zone.SetTargetRenderers(panelRenderers);
     }
-    RefreshMPB();
+
+    RefreshMaterialProps();
   }
 
   private void onEditorShipModified(ShipConstruct ship)
@@ -190,8 +196,8 @@ public class ModuleTechnicolor : PartModule
 
   private void CreateFairingMaterials()
   {
-    Shader fairingTCShader = Shader.Find(Constants.TEAMCOLOR_FAIRING_SHADER_NAME);
-    Shader fairingEditorTCShader = Shader.Find(Constants.TEAMCOLOR_FAIRING_EDITOR_SHADER_NAME);
+    var fairingTCShader = Shader.Find(Constants.TEAMCOLOR_FAIRING_SHADER_NAME);
+    var fairingEditorTCShader = Shader.Find(Constants.TEAMCOLOR_FAIRING_EDITOR_SHADER_NAME);
 
     fairingMaterial = new(fairingEditorTCShader);
     fairingConeMaterial = new(fairingEditorTCShader);
@@ -200,28 +206,40 @@ public class ModuleTechnicolor : PartModule
     {
       fairingMaterial.SetColor("_Color", Color.white);
       fairingMaterial.SetTexture("_MainTex",
-        GameDatabase.Instance.GetTexture(FairingConfig.FairingAlbedoTexture, asNormalMap: false));
+                                 GameDatabase.Instance.GetTexture(
+                                   FairingConfig.FairingAlbedoTexture,
+                                   asNormalMap: false));
       fairingMaterial.SetTexture("_MetalMap",
-        GameDatabase.Instance.GetTexture(FairingConfig.FairingMetalTexture, asNormalMap: false));
+                                 GameDatabase.Instance.GetTexture(FairingConfig.FairingMetalTexture,
+                                   asNormalMap: false));
       fairingMaterial.SetTexture("_BumpMap",
-        GameDatabase.Instance.GetTexture(FairingConfig.FairingNormalTexture, asNormalMap: false));
+                                 GameDatabase.Instance.GetTexture(
+                                   FairingConfig.FairingNormalTexture,
+                                   asNormalMap: false));
       fairingMaterial.SetTexture("_TeamColorMap",
-        GameDatabase.Instance.GetTexture(FairingConfig.FairingTCTexture, asNormalMap: false));
-
+                                 GameDatabase.Instance.GetTexture(FairingConfig.FairingTCTexture,
+                                   asNormalMap: false));
 
       fairingConeMaterial.SetTexture("_MainTex",
-        GameDatabase.Instance.GetTexture(FairingConfig.CapAlbedoTexture, asNormalMap: false));
+                                     GameDatabase.Instance.GetTexture(
+                                       FairingConfig.CapAlbedoTexture,
+                                       asNormalMap: false));
       fairingConeMaterial.SetTexture("_MetalMap",
-        GameDatabase.Instance.GetTexture(FairingConfig.CapMetalTexture, asNormalMap: false));
+                                     GameDatabase.Instance.GetTexture(FairingConfig.CapMetalTexture,
+                                       asNormalMap: false));
       fairingConeMaterial.SetTexture("_BumpMap",
-        GameDatabase.Instance.GetTexture(FairingConfig.CapNormalTexture, asNormalMap: false));
+                                     GameDatabase.Instance.GetTexture(
+                                       FairingConfig.CapNormalTexture,
+                                       asNormalMap: false));
       fairingConeMaterial.SetTexture("_TeamColorMap",
-        GameDatabase.Instance.GetTexture(FairingConfig.CapTCTexture, asNormalMap: false));
+                                     GameDatabase.Instance.GetTexture(FairingConfig.CapTCTexture,
+                                       asNormalMap: false));
     }
     catch (Exception e)
     {
       Utils.LogWarning($"Issue loading texture data for fairings: {e.Message}");
     }
+
     fairingFlightMaterial = new(fairingMaterial);
     fairingFlightMaterial.shader = fairingTCShader;
     fairingFlightConeMaterial = new(fairingConeMaterial);
@@ -259,14 +277,10 @@ public class ModuleTechnicolor : PartModule
       zone.FindTargetRenderers();
       ZoneData[zoneName] = zone;
     }
-    RefreshMPB();
+
+    RefreshMaterialProps();
 
     FairingConfig ??= part.partInfo.partPrefab.Modules.GetModule<ModuleTechnicolor>().FairingConfig;
-  }
-
-  public void LateUpdate()
-  {
-    RefreshMPB();
   }
 
   public override void OnSave(ConfigNode node)
@@ -280,16 +294,18 @@ public class ModuleTechnicolor : PartModule
       node.AddNode(zoneDataNode);
     }
   }
+
   public override void OnWillBeCopied(bool asSymCounterpart)
   {
     base.OnWillBeCopied(asSymCounterpart);
   }
+
   public override void OnWasCopied(PartModule copyPartModule, bool asSymCounterpart)
   {
     base.OnWasCopied(copyPartModule, asSymCounterpart);
     EditorData theseSwatches = new();
-    this.GetPartSwatches(ref theseSwatches);
-    ModuleTechnicolor targetModule = (ModuleTechnicolor)copyPartModule;
+    GetPartSwatches(ref theseSwatches);
+    var targetModule = (ModuleTechnicolor)copyPartModule;
 
     targetModule.Initialize([]);
     targetModule.SetAllSwatches(theseSwatches, false);
@@ -301,14 +317,14 @@ public class ModuleTechnicolor : PartModule
     {
       if (editorZoneData.ActiveInEditor) SetZoneSwatches(editorZoneData);
     }
+
     if (updateCounterparts)
     {
-      foreach (Part p in part.symmetryCounterparts)
+      foreach (var p in part.symmetryCounterparts)
       {
         p.GetComponent<ModuleTechnicolor>()?.SetAllSwatches(editorData, false);
       }
     }
-
   }
 
   public void SetZoneSwatches(EditorZoneData data)
@@ -317,6 +333,8 @@ public class ModuleTechnicolor : PartModule
     Utils.Log($"[ModuleTechnicolor] Applying swatches for zone {data.Name} To part",
               LogType.Editor);
     ZoneData[data.Name].SetSwatches(data);
+
+    RefreshMaterialProps();
   }
 
   public void GetPartSwatches(ref EditorData editorData)
@@ -338,22 +356,14 @@ public class ModuleTechnicolor : PartModule
     }
   }
 
-  private MaterialPropertyBlock mpb;
-  private MaterialUtils.PartMPBProperties partMPBProps = new();
-
-  protected void RefreshMPB()
+  protected void RefreshMaterialProps()
   {
-    if (mpb == null) mpb = new();
-
-    mpb.Clear();
-    part.ExtractMPBProperties(ref partMPBProps);
-    partMPBProps.WriteTo(ref mpb);
-
-    foreach (var zone in ZoneData.Values) zone.Apply(mpb);
+    foreach (var zone in ZoneData.Values) zone.Refresh();
   }
 
   private void OnDestroy()
   {
     GameEvents.onEditorShipModified.Remove(onEditorShipModified);
+    foreach (var zone in ZoneData.Values) zone.Dispose();
   }
 }
