@@ -90,9 +90,13 @@ public static class SwatchLibrary
       int compareSmooth = x.Smoothness.CompareTo(y.Smoothness);
       if (compareSmooth != 0) return compareSmooth;
 
+      bool isGrayA = s1 == 0f;
+      bool isGrayB = s2 == 0f;
+
       // if saturation is low, compare values
-      if (s1 == 0f || s2 == 0f)
-        return v1.CompareTo(v2);
+      if (isGrayA && !isGrayB) return -1;
+      if (!isGrayA && isGrayB) return 1;
+      if (isGrayA && isGrayB) return v1.CompareTo(v2); // sort grayscale by brightness
 
       // Else do a fancy hue/value thing
       // Bin hues for comparison
