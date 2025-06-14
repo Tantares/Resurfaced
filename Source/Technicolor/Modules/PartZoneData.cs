@@ -1,15 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Technicolor;
 
-public class PartZoneData : ZoneDataBase
+public class PartZoneData : ZoneDataBase, IDisposable
 {
   private ModuleTechnicolor _module;
   private Part _part => _module.part;
   private ColorZone _configZone => _module.ConfigZones[Name];
 
   private List<Renderer> _renderers = [];
+
+  private readonly Shabby.DynamicProperties.Props _props = new(priority: 10);
+
+  static PartZoneData()
+  {
+    Shabby.DynamicProperties.MaterialPropertyManager.RegisterPropertyNamesForDebugLogging(
+      "_TC1Color",
+      "_TC1MetalBlend",
+      "_TC1Metalness",
+      "_TC1SmoothBlend",
+      "_TC1Smoothness",
+      "_TC2Color",
+      "_TC2MetalBlend",
+      "_TC2Metalness",
+      "_TC2SmoothBlend",
+      "_TC2Smoothness");
+  }
 
   public PartZoneData(ModuleTechnicolor module, string name)
   {
@@ -46,36 +64,38 @@ public class PartZoneData : ZoneDataBase
       if (blanket || _configZone.Transforms.Contains(renderer.transform.name))
         _renderers.Add(renderer);
     }
+
+    RegisterRenderers();
   }
+
   public void SetTargetRenderers(List<Renderer> renderers)
   {
     _renderers = renderers;
+    RegisterRenderers();
   }
 
-  public void Apply(MaterialPropertyBlock mpb)
+  private void RegisterRenderers()
   {
-    MaterialPropertyBlock rendererMPB = new();
-    for (int i = 0; i < _renderers.Count; i++)
+    foreach (var renderer in _renderers)
     {
-      if (_renderers[i] != null)
-      {
-        _renderers[i].GetPropertyBlock(rendererMPB);
-        mpb.SetColor(ShaderPropertyID._EmissiveColor, rendererMPB.GetColor(ShaderPropertyID._EmissiveColor));
-
-        mpb.SetColor(ShaderPropertyID._TC1Color, PrimarySwatch.Color);
-        mpb.SetFloat(ShaderPropertyID._TC1Metalness, PrimarySwatch.Metalness);
-        mpb.SetFloat(ShaderPropertyID._TC1Smoothness, PrimarySwatch.Smoothness);
-        mpb.SetFloat(ShaderPropertyID._TC1SmoothBlend, PrimarySwatch.SmoothBlend);
-        mpb.SetFloat(ShaderPropertyID._TC1MetalBlend, PrimarySwatch.MetalBlend);
-
-        mpb.SetColor(ShaderPropertyID._TC2Color, SecondarySwatch.Color);
-        mpb.SetFloat(ShaderPropertyID._TC2Metalness, SecondarySwatch.Metalness);
-        mpb.SetFloat(ShaderPropertyID._TC2Smoothness, SecondarySwatch.Smoothness);
-        mpb.SetFloat(ShaderPropertyID._TC2SmoothBlend, SecondarySwatch.SmoothBlend);
-        mpb.SetFloat(ShaderPropertyID._TC2MetalBlend, SecondarySwatch.MetalBlend);
-
-        _renderers[i].SetPropertyBlock(mpb);
-      }
+      Shabby.DynamicProperties.MaterialPropertyManager.Instance?.Set(renderer, _props);
     }
   }
+
+  public void Refresh()
+  {
+    _props.SetColor(ShaderPropertyID._TC1Color, PrimarySwatch.Color);
+    _props.SetFloat(ShaderPropertyID._TC1Metalness, PrimarySwatch.Metalness);
+    _props.SetFloat(ShaderPropertyID._TC1Smoothness, PrimarySwatch.Smoothness);
+    _props.SetFloat(ShaderPropertyID._TC1SmoothBlend, PrimarySwatch.SmoothBlend);
+    _props.SetFloat(ShaderPropertyID._TC1MetalBlend, PrimarySwatch.MetalBlend);
+
+    _props.SetColor(ShaderPropertyID._TC2Color, SecondarySwatch.Color);
+    _props.SetFloat(ShaderPropertyID._TC2Metalness, SecondarySwatch.Metalness);
+    _props.SetFloat(ShaderPropertyID._TC2Smoothness, SecondarySwatch.Smoothness);
+    _props.SetFloat(ShaderPropertyID._TC2SmoothBlend, SecondarySwatch.SmoothBlend);
+    _props.SetFloat(ShaderPropertyID._TC2MetalBlend, SecondarySwatch.MetalBlend);
+  }
+
+  public void Dispose() => _props.Dispose();
 }
