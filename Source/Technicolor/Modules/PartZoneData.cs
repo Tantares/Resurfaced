@@ -8,7 +8,7 @@ public class PartZoneData : ZoneDataBase, IDisposable
 {
   private ModuleTechnicolor _module;
   private Part _part => _module.part;
-  private ColorZone _configZone => _module.ConfigZones[Name];
+  public  ColorZone _configZone => _module.ConfigZones[Name];
 
   private List<Renderer> _renderers = [];
 

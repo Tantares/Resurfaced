@@ -1,11 +1,8 @@
 ﻿using HarmonyLib;
 using KSP.UI.Screens;
 using System;
-using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
-using Steamworks;
-using System.Collections.Generic;
 
 namespace Technicolor.HarmonyPatches;
 
@@ -37,9 +34,21 @@ public class PatchEditorPartIcon
 
         rect.offsetMin = new Vector2(-16, -16);
         rect.offsetMax = new Vector2(-2, -2);
+
+        MaterialUtils.ApplyMaterials(technicolor, __instance.gameObject);
+
       }
     }
   }
 
-
+  [HarmonyPostfix]
+  [HarmonyPatch("ToggleVariant")]
+  static void PatchToggleVariant(EditorPartIcon __instance)
+  {
+    ModuleTechnicolor technicolor = __instance.AvailPart.partPrefab.GetComponent<ModuleTechnicolor>();
+    if (technicolor != null)
+    {
+      MaterialUtils.ApplyMaterials(technicolor, __instance.gameObject);
+    }
+  }
 }

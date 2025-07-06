@@ -263,6 +263,7 @@ public class UIMaterialPaintWindow : MonoBehaviour
           Utils.Log($"[ModuleTechnicolor] Setting {widget.zoneName} to {zoneData.ActiveInEditor}",
                     LogType.Any);
           widget.SetVisible(zoneData.ActiveInEditor);
+
           if (zoneData.ActiveInEditor)
           {
             widget.OnSelectSwatch(zoneData.PrimarySwatch, zoneData.SecondarySwatch);
